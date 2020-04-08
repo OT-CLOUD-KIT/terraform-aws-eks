@@ -93,4 +93,4 @@ Check out these related projects.
 [![Devesh Sharma][devesh_avataar]][devesh_homepage]<br/>[Devesh Sharma][devesh_homepage] 
 
   [devesh_homepage]: https://github.com/deveshs23
-  [devesh_avataar]: https://img.cloudposse.com/150x150/https://github.com/deveshs23.png
+  [devesh_avataar]: https://img.cloudposse.com/150x150/https://github.com/deveshs23.jpeg
