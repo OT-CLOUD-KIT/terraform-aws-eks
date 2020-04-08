@@ -90,7 +90,7 @@ Check out these related projects.
 
 ### Contributors
 
-[![Devesh Sharma][devesh_avatar]][sudipt_homepage]<br/>[Devesh Sharma][devesh_homepage] 
+[![Devesh Sharma][sudipt_avatar]][devesh_homepage]<br/>[Sudipt Sharma][devesh_homepage] 
 
   [devesh_homepage]: https://github.com/deveshs23
-  [devesh_avatar]: https://avatars0.githubusercontent.com/u/46020982?s=400&u=e605a051cb167a230761f154dc89b4bdd318ec1c&v=4
+  [devesh_avatar]: https://img.cloudposse.com/150x150/https://github.com/deveshs23.png
