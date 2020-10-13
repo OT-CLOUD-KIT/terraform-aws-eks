@@ -24,7 +24,7 @@ module "petpark_eks_cluster" {
   create_spot_node_group =  true
   create_node_group      =  false
   vpc_id              =  "vpc-077a88f9398c12b39"
-  slackUrl	          =  "https://hooks.slack.com/services/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"  
+  slackUrl	          =  "slack_webhook URL"  
   node_groups = {}
  spot_node_group = {
 	"spot_worker1" = {
