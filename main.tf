@@ -2,35 +2,34 @@ resource "aws_eks_cluster" "eks_cluster" {
   name     = var.cluster_name
   role_arn = aws_iam_role.cluster_role.arn
   version  = var.eks_cluster_version
-  tags      = var.eks_cluster_tag
-  depends_on = [ 
-    aws_iam_role_policy_attachment.eks_AmazonEKSClusterPolicy,
-    aws_iam_role_policy_attachment.eks_AmazonEKSServicePolicy,
-]
+  tags = merge(
+    {
+      Name = format("%s-cluster", var.cluster_name)
+    },
+    {
+      "Provisioner" = "Terraform"
+    },
+    var.tags
+  )
+  depends_on = [
+    aws_iam_role_policy_attachment.eks-AmazonEKSClusterPolicy,
+    aws_iam_role_policy_attachment.eks-AmazonEKSServicePolicy,
+  ]
 
   vpc_config {
-    subnet_ids = var.vpc_subnet
+    subnet_ids = var.subnets
+    security_group_ids = [aws_security_group.master-cluster.id]
+    endpoint_private_access = var.endpoint_private
+    endpoint_public_access = var.endpoint_public
   }
 }
 
-resource "aws_eks_node_group" "node_group" {
-  cluster_name    = aws_eks_cluster.eks_cluster.id
-  node_group_name = var.node_group_name
-  node_role_arn   = aws_iam_role.node_group_role.arn
-  subnet_ids      = var.vpc_subnet
-  instance_types  = var.instance_type
-  disk_size       = var.disk_size
-
-  scaling_config {
-    desired_size = var.scale_desired_size
-    max_size     = var.scale_max_size
-    min_size     = var.scale_min_size
-  }
-  depends_on = [
-    aws_iam_role_policy_attachment.node_AmazonEKSWorkerNodePolicy,
-    aws_iam_role_policy_attachment.node_AmazonEKS_CNI_Policy,
-    aws_iam_role_policy_attachment.node_AmazonEC2ContainerRegistryReadOnly,
-  ]
+module "node_group" {
+  source            = "./modules/eks_node_group"
+  create_node_group = var.create_node_group
+  cluster_name      = aws_eks_cluster.eks_cluster.id
+  node_role_arn     = aws_iam_role.node_group_role.arn
+  node_groups       = var.node_groups
 }
 
 resource "aws_iam_role" "cluster_role" {
@@ -50,20 +49,29 @@ resource "aws_iam_role" "cluster_role" {
   ]
 }
 POLICY
+  tags = merge(
+    {
+      Name = format("%s-cluster_iam_role", var.cluster_name)
+    },
+    {
+      "Provisioner" = "Terraform"
+    },
+    var.tags
+  )
 }
 
-resource "aws_iam_role_policy_attachment" "eks_AmazonEKSClusterPolicy" {
+resource "aws_iam_role_policy_attachment" "eks-AmazonEKSClusterPolicy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
   role       = aws_iam_role.cluster_role.name
 }
 
-resource "aws_iam_role_policy_attachment" "eks_AmazonEKSServicePolicy" {
+resource "aws_iam_role_policy_attachment" "eks-AmazonEKSServicePolicy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSServicePolicy"
   role       = aws_iam_role.cluster_role.name
 }
 
 resource "aws_iam_role" "node_group_role" {
-  name = "eks-node-group"
+  name = var.eks_node_group_name
 
   assume_role_policy = jsonencode({
     Statement = [{
@@ -75,19 +83,33 @@ resource "aws_iam_role" "node_group_role" {
     }]
     Version = "2012-10-17"
   })
+  tags = merge(
+    {
+      Name = format("%s-node_group_iam_role", var.eks_node_group_name)
+    },
+    {
+      "Provisioner" = "Terraform"
+    },
+    var.tags
+  )
 }
 
-resource "aws_iam_role_policy_attachment" "node_AmazonEC2ContainerRegistryReadOnly" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+resource "aws_iam_role_policy_attachment" "node-AmazonEC2FullAccess" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2FullAccess"
   role       = aws_iam_role.node_group_role.name
 }
 
-resource "aws_iam_role_policy_attachment" "node_AmazonEKS_CNI_Policy" {
+resource "aws_iam_role_policy_attachment" "node-AmazonEKS_CNI_Policy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
   role       = aws_iam_role.node_group_role.name
 }
 
-resource "aws_iam_role_policy_attachment" "node_AmazonEKSWorkerNodePolicy" {
+resource "aws_iam_role_policy_attachment" "node-AmazonEKSWorkerNodePolicy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
+  role       = aws_iam_role.node_group_role.name
+}
+
+resource "aws_iam_role_policy_attachment" "node-AmazonEC2ContainerRegistryReadOnly" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
   role       = aws_iam_role.node_group_role.name
 }
