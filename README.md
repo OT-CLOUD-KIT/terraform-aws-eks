@@ -10,28 +10,64 @@
 
 ## Usage
 
-```sh
-$   cat main.tf
-/*-------------------------------------------------------*/
-module "non_prod_eks_cluster" {
-  source              = "../"
-  cluster_name        = "non-prod-eks"
-  eks_cluster_version = "1.15"
-  vpc_subnet          = [
-                          "subnet-073d",
-                          "subnet-0a", 	
-                          "subnet-08f",
-                          "subnet-09"
-                          ]
-  node_group_name     = "non-prod-eks-node"
-  instance_type       = ["m5a.xlarge"]
-  eks_cluster_tag     = { "test-esk" = "test" }
-  disk_size           = 40
-  scale_desired_size  = 3
-  scale_max_size      = 5
-  scale_min_size      = 2
+```hcl
+provider "aws" {
+  profile = "default"
+  region  = "ap-south-1"
 }
-/*-------------------------------------------------------*/
+
+locals {
+  common_tags = { ENV : "QA", OWNER : "DEVOPS", PROJECT : "CATALOG_MIGRATION", COMPONENT : "EKS", COMPONENT_TYPE : "BUILDPIPER" }
+  worker_group1_tags = { "name": "worker01" }
+  worker_group2_tags = { "name": "worker02" }
+}
+
+module "petpark_eks_cluster" {
+  source                 =  "../eks"
+  cluster_name           =  var.cluster_name
+  eks_cluster_version    =  "1.16"
+  subnets                =  ["subnet-057a78d8", "subnet-0ac0f6a"]
+  tags                   =  local.common_tags
+  kubeconfig_name        =  "config"
+  config_output_path     =  "config"
+  eks_node_group_name    =  "test-eks-cluster"
+  region                 =  "ap-south-1"
+  endpoint_private       =  false
+  endpoint_public        =  true
+  create_spot_node_group =  true
+  create_node_group      =  true
+  vpc_id                 =  "vpc-077a88f"
+  slackUrl	             =  "slack_webhook_url"  
+  node_groups = {
+    "worker1" = {
+      subnets            = ["privtesubnet_id_1", "privatesubnet_id_2"]
+      ssh_key            = var.ssh_key
+      security_group_ids = [var.node_sg]
+      instance_type      = ["m5a.2xlarge"]
+      desired_capacity   = 6
+      disk_size          = 100
+      max_capacity       = 15
+      min_capacity       = 2
+      tags               = merge(local.common_tags, local.worker_group1_tags)
+      labels             = {"node_group": "worker1"}
+    }
+  }
+ spot_node_group = {
+	"spot_worker1" = {
+	  subnets             = ["subnet-057a78d8d14adf40c", "subnet-0ac0f6a4d0c41eecc"]
+	  instance_type       =   "m5a.2xlarge"
+    ami_id              = "ami-xyz"
+	  disk_size           = 40
+    desired_capacity    = 2
+	  max_capacity        = 6
+    min_capacity        = 2
+    ssh_key             = var.ssh_key
+    spot_price          = "1.117"
+	  security_group_ids  = ["sg-0793542c5c6998159"]
+	  tags                = merge(local.common_tags, local.worker_group1_tags)
+  	}
+  }
+}
 ```
 
 ```sh
@@ -41,8 +77,20 @@ output "endpoint" {
   value = aws_eks_cluster.eks_cluster.endpoint
 }
 
+output "node_iam_role_arn" {
+  value = aws_iam_role.node_group_role.arn
+}
+
 output "kubeconfig-certificate-authority-data" {
   value = aws_eks_cluster.eks_cluster.certificate_authority.0.data
+}
+
+output "eks_cluster_id" {
+  value = aws_eks_cluster.eks_cluster.id
+}
+
+output "eks_cluster_arn" {
+  value = aws_eks_cluster.eks_cluster.arn
 }
 /*-------------------------------------------------------*/
 ```
@@ -58,25 +106,25 @@ output "kubeconfig-certificate-authority-data" {
 | instance_type | Define Instance type ie. "t2.medium". | lint(string) | null | yes |
 | disk_size | Define Disk size of nodes. | number | null | yes |
 | scale_min_size | Define minimum nodes scaling. | number | null | yes |
-| scale_max_size | Define Max nodes scaling. | number | null | yes |
 | scale_desired_size | Define Desire nodes. | number | null | yes |
-| scale_desired_size | Define Desire nodes. | number | null | yes |
-
+| ssh_key | Define ssh key. | string | null | yes |
+| security_group_ids | ssh security group id for ssh. | string | null | yes |
+| kubeconfig_name | name for kube config file. | string | null | yes |
+| config_output_path | path to store kubeconfig file | string | null | yes |
+| region | define region | string | null | yes |
+| endpoint_private | define endpoint private | boolean | null | yes |
+| endpoint_public | define endpoint public | boolean | null | yes |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| launch_template_name | Name of the launch template |
-| launch_template_default_version | Default of the launch template |
-| launch_template_latest_version | Latest of the launch template |
-| target_group_arn | ARN of the target group |
-| route53_name | Name of the record created |
+| endpoint | Endpoint of EKS cluster |
+| node_iam_role_arn | EKS node group default arn |
+| kubeconfig-certificate-authority-data | eks certificate |
+| eks_cluster_id | Eks cluster id |
+| eks_cluster_arn | EKS cluster arn eks_cluster_arn |
 
-## Future proposed changes
-
-- Add capability to setup without ALB & then health check would be EC2 instance
- 
 ## Related Projects
 
 Check out these related projects.
