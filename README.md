@@ -1,91 +1,150 @@
-# eks
+# EKS
 
+[![Opstree Solutions][opstree_avatar]][opstree_homepage]<br/>[Opstree Solutions][opstree_homepage] 
 
+  [opstree_homepage]: https://opstree.github.io/
+  [opstree_avatar]: https://img.cloudposse.com/150x150/https://github.com/opstree.png
 
-## Getting started
-
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
-
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
-
-## Add your files
-
-- [ ] [Create](https://gitlab.com/-/experiment/new_project_readme_content:41a3125df2c206218d3fd0f8f676aeeb?https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://gitlab.com/-/experiment/new_project_readme_content:41a3125df2c206218d3fd0f8f676aeeb?https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://gitlab.com/-/experiment/new_project_readme_content:41a3125df2c206218d3fd0f8f676aeeb?https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
-
-```
-cd existing_repo
-git remote add origin https://gitlab.com/ot-client/wheebox/terraform-modules/eks.git
-git branch -M main
-git push -uf origin main
-```
-
-## Integrate with your tools
-
-- [ ] [Set up project integrations](https://gitlab.com/-/experiment/new_project_readme_content:41a3125df2c206218d3fd0f8f676aeeb?https://docs.gitlab.com/ee/user/project/integrations/)
-
-## Collaborate with your team
-
-- [ ] [Invite team members and collaborators](https://gitlab.com/-/experiment/new_project_readme_content:41a3125df2c206218d3fd0f8f676aeeb?https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://gitlab.com/-/experiment/new_project_readme_content:41a3125df2c206218d3fd0f8f676aeeb?https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://gitlab.com/-/experiment/new_project_readme_content:41a3125df2c206218d3fd0f8f676aeeb?https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Automatically merge when pipeline succeeds](https://gitlab.com/-/experiment/new_project_readme_content:41a3125df2c206218d3fd0f8f676aeeb?https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
-
-## Test and Deploy
-
-Use the built-in continuous integration in GitLab.
-
-- [ ] [Get started with GitLab CI/CD](https://gitlab.com/-/experiment/new_project_readme_content:41a3125df2c206218d3fd0f8f676aeeb?https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing(SAST)](https://gitlab.com/-/experiment/new_project_readme_content:41a3125df2c206218d3fd0f8f676aeeb?https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://gitlab.com/-/experiment/new_project_readme_content:41a3125df2c206218d3fd0f8f676aeeb?https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://gitlab.com/-/experiment/new_project_readme_content:41a3125df2c206218d3fd0f8f676aeeb?https://docs.gitlab.com/ee/user/clusters/agent/)
-
-***
-
-# Editing this README
-
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!).  Thank you to [makeareadme.com](https://gitlab.com/-/experiment/new_project_readme_content:41a3125df2c206218d3fd0f8f676aeeb?https://www.makeareadme.com/) for this template.
-
-## Suggestions for a good README
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
-
-## Name
-Choose a self-explaining name for your project.
-
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
-
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
-
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
-
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+- This terraform module will create a EKS Cluster.
+- This projecct is a part of opstree's ot-aws initiative for terraform modules.
 
 ## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+```hcl
+provider "aws" {
+  profile = "default"
+  region  = "ap-south-1"
+}
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+locals {
+  common_tags        = { ENV : "QA", OWNER : "DEVOPS", PROJECT : "CATALOG_MIGRATION", COMPONENT : "EKS", COMPONENT_TYPE : "BUILDPIPER" }
+  worker_group1_tags = { "name" : "worker01" }
+  worker_group2_tags = { "name" : "worker02" }
+}
 
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
+module "petpark_eks_cluster" {
+  source                 = "../eks"
+  cluster_name           = var.cluster_name
+  eks_cluster_version    = "1.16"
+  subnets                = ["subnet-057a78d8", "subnet-0ac0f6a"]
+  tags                   = local.common_tags
+  kubeconfig_name        = "config"
+  config_output_path     = "config"
+  eks_node_group_name    = "test-eks-cluster"
+  region                 = "ap-south-1"
+  create_node_group      = true
+  endpoint_private       = false
+  endpoint_public        = true
+  vpc_id                 = "vpc-077a88f"
+  slackUrl               = "slack_webhook_url"
+  node_groups = {
+    "worker1" = {
+      subnets            = ["privtesubnet_id_1", "privatesubnet_id_2"]
+      ssh_key            = var.ssh_key
+      security_group_ids = [var.node_sg]
+      instance_type      = ["m5a.2xlarge"]
+      desired_capacity   = 6
+      disk_size          = 100
+      max_capacity       = 15
+      min_capacity       = 2
+      capacity_type      = "ON_DEMAND"
+      tags               = merge(local.common_tags, local.worker_group1_tags)
+      labels             = { "node_group" : "worker1" }
+    }
+    "worker2" = {
+      subnets            = ["privtesubnet_id_1", "privatesubnet_id_2"]
+      ssh_key            = var.ssh_key
+      security_group_ids = [var.node_sg]
+      instance_type      = ["m5a.2xlarge"]
+      desired_capacity   = 6
+      disk_size          = 100
+      max_capacity       = 15
+      min_capacity       = 2
+      capacity_type      = "SPOT"
+      tags               = merge(local.common_tags, local.worker_group1_tags)
+      labels             = { "node_group" : "worker2" }
+    }
+  }
+}
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
+```
 
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
+```sh
+$   cat output.tf
+/*-------------------------------------------------------*/
+output "endpoint" {
+  value = aws_eks_cluster.eks_cluster.endpoint
+}
 
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
+output "node_iam_role_arn" {
+  value = aws_iam_role.node_group_role.arn
+}
 
-## License
-For open source projects, say how it is licensed.
+output "kubeconfig-certificate-authority-data" {
+  value = aws_eks_cluster.eks_cluster.certificate_authority.0.data
+}
 
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+output "eks_cluster_id" {
+  value = aws_eks_cluster.eks_cluster.id
+}
 
+output "eks_cluster_arn" {
+  value = aws_eks_cluster.eks_cluster.arn
+}
+/*-------------------------------------------------------*/
+```
+## Inputs
+
+| Name | Description | Type | Default | Required |
+|------|-------------|:----:|:-----:|:-----:|
+| cluster_name | Name of Your Cluster. | string | null | yes |
+| vpc_subnet | A list of subnet IDs to launch resources in. | List | null | yes |
+| eks_cluster_version | Define Kubernetes Version to install. | string | null | yes |
+| eks_cluster_tag | eks Cluster Tag. | map(string) | null | yes |
+| node_group_name | node group name to attach in EKS. | string | null | yes |
+| instance_type | Define Instance type ie. "t2.medium". | lint(string) | null | yes |
+| disk_size | Define Disk size of nodes. | number | null | yes |
+| scale_min_size | Define minimum nodes scaling. | number | null | yes |
+| scale_desired_size | Define Desire nodes. | number | null | yes |
+| ssh_key | Define ssh key. | string | null | yes |
+| security_group_ids | ssh security group id for ssh. | string | null | yes |
+| kubeconfig_name | name for kube config file. | string | null | yes |
+| config_output_path | path to store kubeconfig file | string | null | yes |
+| region | define region | string | null | yes |
+| endpoint_private | define endpoint private | boolean | null | yes |
+| endpoint_public | define endpoint public | boolean | null | yes |
+| create_node_group | create node groups | boolean | yes | yes |
+| capacity_type | define capacity type like ON_DEMAND or SPOT | string | null | yes |
+| metrics_server | if you want to install materics server in eks cluster | boolean | yes | no |
+| k8s-spot-termination-handler | if you want to install k8s-spot-termination-handler in eks cluster | boolean | yes | no |
+| cluster_autoscaler | if you want to install cluster_autoscaler in eks cluster | boolean | yes | no |
+| slackUrl | notification for instance termination | boolean | yes | no |
+
+
+## Outputs
+
+| Name | Description |
+|------|-------------|
+| endpoint | Endpoint of EKS cluster |
+| node_iam_role_arn | EKS node group default arn |
+| kubeconfig-certificate-authority-data | eks certificate |
+| eks_cluster_id | Eks cluster id |
+| eks_cluster_arn | EKS cluster arn eks_cluster_arn |
+
+## Related Projects
+
+Check out these related projects.
+
+- [network_skeleton](https://gitlab.com/ot-aws/terrafrom_v0.12.21/network_skeleton) - Terraform module for providing a general purpose Networking solution
+- [security_group](https://gitlab.com/ot-aws/terrafrom_v0.12.21/security_group) - Terraform module for creating dynamic Security groups
+- [HA_ec2_ALB](https://gitlab.com/ot-aws/terrafrom_v0.12.21/ha_ec2_alb) - Terraform module will create a Highly available setup of an EC2 instance with quick disater recovery.
+- [rds](https://gitlab.com/ot-aws/terrafrom_v0.12.21/rds) - Terraform module for creating Relation Datbase service.
+- [HA_ec2](https://gitlab.com/ot-aws/terrafrom_v0.12.21/ha_ec2.git) - Terraform module for creating a Highly available setup of an EC2 instance with quick disater recovery.
+- [rolling_deployment](https://gitlab.com/ot-aws/terrafrom_v0.12.21/rolling_deployment.git) - This terraform module will orchestrate rolling deployment.
+
+### Contributors
+
+[![Devesh Sharma][devesh_avataar]][devesh_homepage]<br/>[Devesh Sharma][devesh_homepage] 
+
+  [devesh_homepage]: https://github.com/deveshs23
+  [devesh_avataar]: https://img.cloudposse.com/150x150/https://github.com/deveshs23.png
