@@ -149,3 +149,9 @@ variable "node_groups" {
     capacity_type      = string
   }))
 }
+
+variable "enabled_cluster_log_types" {
+description = "List of the desired control plane logging to enable"
+type = list(string)
+default = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
+}
