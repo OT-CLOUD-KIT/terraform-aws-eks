@@ -143,8 +143,4 @@ Check out these related projects.
 - [rolling_deployment](https://gitlab.com/ot-aws/terrafrom_v0.12.21/rolling_deployment.git) - This terraform module will orchestrate rolling deployment.
 
 ### Contributors
-
-[![Devesh Sharma][devesh_avataar]][devesh_homepage]<br/>[Devesh Sharma][devesh_homepage] 
-
-  [devesh_homepage]: https://github.com/deveshs23
-  [devesh_avataar]: https://img.cloudposse.com/150x150/https://github.com/deveshs23.png
+Aashutosh
