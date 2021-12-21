@@ -37,6 +37,8 @@ module "petpark_eks_cluster" {
   endpoint_public        = true
   vpc_id                 = "vpc-077a88f"
   slackUrl               = "slack_webhook_url"
+  enable_oidc            = true
+  enabled_cluster_log_types  = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
   node_groups = {
     "worker1" = {
       subnets            = ["privtesubnet_id_1", "privatesubnet_id_2"]
@@ -119,6 +121,8 @@ output "eks_cluster_arn" {
 | k8s-spot-termination-handler | if you want to install k8s-spot-termination-handler in eks cluster | boolean | yes | no |
 | cluster_autoscaler | if you want to install cluster_autoscaler in eks cluster | boolean | yes | no |
 | slackUrl | notification for instance termination | boolean | yes | no |
+| enable_oidc | Conditon to provide OpenID Connect identity provider information for the cluster | boolean | yes | no |
+| enabled_cluster_log_types | List of the desired control plane logging to enable | list | yes | no |
 
 
 ## Outputs
