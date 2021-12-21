@@ -157,7 +157,7 @@ default = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
 }
 
 variable "enable_oidc" {
-  description = "Conditon to provide OpenID Connect identity provider information for the cluster"
+  description = "Condition to provide OpenID Connect identity provider information for the cluster"
   type = bool
   default = true
 }

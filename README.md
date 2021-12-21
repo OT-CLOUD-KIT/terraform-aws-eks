@@ -121,7 +121,7 @@ output "eks_cluster_arn" {
 | k8s-spot-termination-handler | if you want to install k8s-spot-termination-handler in eks cluster | boolean | yes | no |
 | cluster_autoscaler | if you want to install cluster_autoscaler in eks cluster | boolean | yes | no |
 | slackUrl | notification for instance termination | boolean | yes | no |
-| enable_oidc | Conditon to provide OpenID Connect identity provider information for the cluster | boolean | yes | no |
+| enable_oidc | Condition to provide OpenID Connect identity provider information for the cluster | boolean | yes | no |
 | enabled_cluster_log_types | List of the desired control plane logging to enable | list | yes | no |
 
 
@@ -147,5 +147,15 @@ Check out these related projects.
 - [rolling_deployment](https://gitlab.com/ot-aws/terrafrom_v0.12.21/rolling_deployment.git) - This terraform module will orchestrate rolling deployment.
 
 ### Contributors
-Devesh
-Aashutosh
+
+[![Devesh Sharma][devesh_avataar]][devesh_homepage]<br/>[Devesh Sharma][devesh_homepage] 
+
+  [devesh_homepage]: https://github.com/deveshs23
+  [devesh_avataar]: https://img.cloudposse.com/150x150/https://github.com/deveshs23.png
+
+  Aashutosh
+
+  [![Shweta Tyagi][shweta_avatar]][shweta_homepage]<br/>[Shweta Tyagi][shweta_homepage] 
+
+  [shweta_homepage]: https://github.com/shwetatyagi-ot
+  [shweta_avatar]: https://img.cloudposse.com/75x75/https://github.com/shwetatyagi-ot.png
