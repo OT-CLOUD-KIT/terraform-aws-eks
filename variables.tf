@@ -175,7 +175,7 @@ variable "map_additional_iam_roles" {
 }
 
 variable "add_additional_iam_roles" {
-  description = "Condition to map additinal iam roles in EKS config map"
+  description = "Condition to map additinal iam roles in EKS ConfigMap"
   type = bool
   default = true
 }
