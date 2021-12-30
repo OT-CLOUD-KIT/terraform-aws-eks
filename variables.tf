@@ -161,3 +161,21 @@ variable "enable_oidc" {
   type = bool
   default = true
 }
+
+variable "map_additional_iam_roles" {
+  description = "Additional IAM roles to add to `config-map-aws-auth` ConfigMap"
+
+  type = list(object({
+    rolearn  = string
+    username = string
+    groups   = list(string)
+  }))
+
+  default = []
+}
+
+variable "add_additional_iam_roles" {
+  description = "Condition to map additinal iam roles in EKS config map"
+  type = bool
+  default = true
+}

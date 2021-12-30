@@ -76,8 +76,3 @@ resource "aws_iam_role_policy_attachment" "autosclling_tags" {
   policy_arn = aws_iam_policy.autoscalling_tags.arn
   role       = aws_iam_role.cluster_autoscaler.name
 }
-
-output "cluster-autoscaler-role-arn" {
-  count = var.enable_oidc == true ? 1 : 0
-  value = aws_iam_role.cluster_autoscaler.arn
-}

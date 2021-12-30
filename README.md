@@ -37,6 +37,13 @@ module "petpark_eks_cluster" {
   endpoint_public        = true
   vpc_id                 = "vpc-077a88f"
   slackUrl               = "slack_webhook_url"
+  add_additional_iam_roles = true
+  map_additional_iam_roles = [{
+    rolearn  = "${var.rolearn}"
+    username = "${var.username}"
+    groups   = ["system:masters"]
+  }
+  ]
   enable_oidc            = true
   enabled_cluster_log_types  = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
   node_groups = {
@@ -123,6 +130,8 @@ output "eks_cluster_arn" {
 | slackUrl | notification for instance termination | boolean | yes | no |
 | enable_oidc | Condition to provide OpenID Connect identity provider information for the cluster | boolean | yes | no |
 | enabled_cluster_log_types | List of the desired control plane logging to enable | list | yes | no |
+| add_additional_iam_roles | Condition to map additinal iam roles in EKS config map | boolean | yes | no |
+| map_additional_iam_roles | Additional IAM roles to add to `config-map-aws-auth` ConfigMap | list(object) | no | no |
 
 
 ## Outputs
