@@ -157,12 +157,15 @@ Check out these related projects.
 
 ### Contributors
 
-  Aashutosh
-
-  [![Shweta Tyagi][shweta_avatar]][shweta_homepage]<br/>[Shweta Tyagi][shweta_homepage] 
+[![Shweta Tyagi][shweta_avatar]][shweta_homepage]<br/>[Shweta Tyagi][shweta_homepage] 
 
   [shweta_homepage]: https://github.com/shwetatyagi-ot
   [shweta_avatar]: https://img.cloudposse.com/75x75/https://github.com/shwetatyagi-ot.png
+
+[![aashutosh][aashutosh_avatar]][aashutosh_homepage]<br/>[Aashutosh][aashutosh_homepage] 
+
+  [aashutosh_homepage]: https://https://github.com/aashutoshvats
+  [aashutosh_avatar]: https://img.cloudposse.com/70x70/http://github.com/aashutoshvats.png  
 
 [![Devesh Sharma][devesh_avataar]][devesh_homepage]<br/>[Devesh Sharma][devesh_homepage] 
 
