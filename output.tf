@@ -42,8 +42,3 @@ output "module_node_group_resources" {
   description = "EKS module resources"
   value = module.node_group.node_group_resources
 }
-
-output "cluster-autoscaler-role-arn" {
-  count = var.enable_oidc == true ? 1 : 0
-  value = aws_iam_role.cluster_autoscaler.arn
-}

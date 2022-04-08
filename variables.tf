@@ -96,6 +96,7 @@ variable "endpoint_public" {
 variable "slackUrl" {
   description = "Slack Web hook URL"
   type = string
+  default = ""
 }
 
 variable "vpc_id" {
@@ -154,28 +155,4 @@ variable "enabled_cluster_log_types" {
 description = "List of the desired control plane logging to enable"
 type = list(string)
 default = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
-}
-
-variable "enable_oidc" {
-  description = "Condition to provide OpenID Connect identity provider information for the cluster"
-  type = bool
-  default = true
-}
-
-variable "map_additional_iam_roles" {
-  description = "Additional IAM roles to add to `config-map-aws-auth` ConfigMap"
-
-  type = list(object({
-    rolearn  = string
-    username = string
-    groups   = list(string)
-  }))
-
-  default = []
-}
-
-variable "add_additional_iam_roles" {
-  description = "Condition to map additinal iam roles in EKS ConfigMap"
-  type = bool
-  default = true
 }

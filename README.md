@@ -37,15 +37,6 @@ module "petpark_eks_cluster" {
   endpoint_public        = true
   vpc_id                 = "vpc-077a88f"
   slackUrl               = "slack_webhook_url"
-  add_additional_iam_roles = true
-  map_additional_iam_roles = [{
-    rolearn  = "${var.rolearn}"
-    username = "${var.username}"
-    groups   = ["system:masters"]
-  }
-  ]
-  enable_oidc            = true
-  enabled_cluster_log_types  = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
   node_groups = {
     "worker1" = {
       subnets            = ["privtesubnet_id_1", "privatesubnet_id_2"]
@@ -128,10 +119,6 @@ output "eks_cluster_arn" {
 | k8s-spot-termination-handler | if you want to install k8s-spot-termination-handler in eks cluster | boolean | yes | no |
 | cluster_autoscaler | if you want to install cluster_autoscaler in eks cluster | boolean | yes | no |
 | slackUrl | notification for instance termination | boolean | yes | no |
-| enable_oidc | Condition to provide OpenID Connect identity provider information for the cluster | boolean | yes | no |
-| enabled_cluster_log_types | List of the desired control plane logging to enable | list | yes | no |
-| add_additional_iam_roles | Condition to map additinal iam roles in EKS config map | boolean | yes | no |
-| map_additional_iam_roles | Additional IAM roles to add to `config-map-aws-auth` ConfigMap | list(object) | no | no |
 
 
 ## Outputs
@@ -156,18 +143,5 @@ Check out these related projects.
 - [rolling_deployment](https://gitlab.com/ot-aws/terrafrom_v0.12.21/rolling_deployment.git) - This terraform module will orchestrate rolling deployment.
 
 ### Contributors
-
-[![Shweta Tyagi][shweta_avatar]][shweta_homepage]<br/>[Shweta Tyagi][shweta_homepage] 
-
-  [shweta_homepage]: https://github.com/shwetatyagi-ot
-  [shweta_avatar]: https://img.cloudposse.com/75x75/https://github.com/shwetatyagi-ot.png
-
-[![aashutosh][aashutosh_avatar]][aashutosh_homepage]<br/>[Aashutosh][aashutosh_homepage] 
-
-  [aashutosh_homepage]: https://https://github.com/aashutoshvats
-  [aashutosh_avatar]: https://img.cloudposse.com/70x70/http://github.com/aashutoshvats.png  
-
-[![Devesh Sharma][devesh_avataar]][devesh_homepage]<br/>[Devesh Sharma][devesh_homepage] 
-
-  [devesh_homepage]: https://github.com/deveshs23
-  [devesh_avataar]: https://img.cloudposse.com/150x150/https://github.com/deveshs23.png
+Devesh
+Aashutosh
