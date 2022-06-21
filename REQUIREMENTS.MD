@@ -8,3 +8,5 @@ EKS module stuff
   * OIDC support ( Need to create our odic for eks, not on priority as of now )
   * EKS master on pre defined subnets (This is important , ask @bhupender singh for those subnets)
   * Enable support for Fargate profile
+  * Enable support for Self Managed WorkerGroup 
+  // Node group doen't provide option to choose custom AMI as of now thus support of self Managed workergroup is importatant
