@@ -7,3 +7,4 @@ EKS module stuff
   * kms encryption option to encryption root ebs and other secondary ebs  in worker group
   * OIDC support ( Need to create our odic for eks, not on priority as of now )
   * EKS master on pre defined subnets (This is important , ask @bhupender singh for those subnets)
+  * Enable support for Fargate profile
