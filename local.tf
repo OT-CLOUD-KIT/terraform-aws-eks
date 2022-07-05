@@ -9,7 +9,7 @@ locals {
   })
   configmap_roles = [
     {
-      rolearn  = aws_iam_role.node_group_role.arn
+      rolearn  = aws_iam_role.node_group_role[0].arn
       username = "system:node:{{EC2PrivateDNSName}}"
       groups = tolist(concat(
         [
