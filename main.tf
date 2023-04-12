@@ -131,3 +131,11 @@ resource "aws_security_group_rule" "cluster_private_access" {
 
   security_group_id = aws_eks_cluster.eks_cluster.vpc_config[0].cluster_security_group_id
 }
+
+resource "aws_eks_addon" "addons" {
+  depends_on = [
+    module.node_group
+  ]
+  cluster_name      = aws_eks_cluster.eks_cluster.id
+  addon_name        = var.addon_name
+}

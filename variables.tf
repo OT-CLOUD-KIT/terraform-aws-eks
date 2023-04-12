@@ -156,3 +156,9 @@ description = "List of the desired control plane logging to enable"
 type = list(string)
 default = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
 }
+
+variable "addon_name" {
+  description = "For adding ebs csi driver"
+  default     = "aws-ebs-csi-driver"
+  type        = string
+}
