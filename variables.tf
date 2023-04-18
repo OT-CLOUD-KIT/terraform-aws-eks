@@ -157,8 +157,19 @@ type = list(string)
 default = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
 }
 
-variable "addon_name" {
-  description = "For adding ebs csi driver"
-  default     = "aws-ebs-csi-driver"
-  type        = string
+variable "addons" {
+  type = list(object({
+    name    = string
+  }))
+
+  default = [
+  
+    {
+      name    = "aws-ebs-csi-driver"
+    }
+  ]
+}
+variable "api_version" {
+  description = "kubeconfig api version"
+  default = "client.authentication.k8s.io/v1beta1"
 }

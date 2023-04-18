@@ -137,5 +137,20 @@ resource "aws_eks_addon" "addons" {
     module.node_group
   ]
   cluster_name      = aws_eks_cluster.eks_cluster.id
-  addon_name        = var.addon_name
+  for_each          = { for addon in var.addons : addon.name => addon }
+  addon_name        = each.value.name
+}
+
+module "cluster_autoscaler" {
+  source = "./modules/aws-eks-cluster-autoscaler"
+
+  enabled = true
+  depends_on = [
+aws_eks_cluster.eks_cluster
+  ]
+
+  cluster_name                     = aws_eks_cluster.eks_cluster.id
+  cluster_identity_oidc_issuer     = aws_eks_cluster.eks_cluster.identity.0.oidc.0.issuer
+  cluster_identity_oidc_issuer_arn = aws_iam_openid_connect_provider.demo.arn
+  aws_region                       = "us-east-1"
 }

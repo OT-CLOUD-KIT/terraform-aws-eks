@@ -25,7 +25,7 @@ output "node_groups_resources" {
 
 output "kubeconfig-certificate-authority-data" {
   description = "Kubernetes SSL certificate data"
-  value       = aws_eks_cluster.eks_cluster.certificate_authority.0.data
+  value       = aws_eks_cluster.eks_cluster.certificate_authority[0].data
 }
 
 output "eks_cluster_id" {
