@@ -140,17 +140,16 @@ resource "aws_eks_addon" "addons" {
   for_each          = { for addon in var.addons : addon.name => addon }
   addon_name        = each.value.name
 }
+module "karpenter" {
+  source  = "./modules/karpenter"
 
-module "cluster_autoscaler" {
-  source = "./modules/aws-eks-cluster-autoscaler"
+  cluster_name = var.cluster_name
 
-  enabled = true
-  depends_on = [
-aws_eks_cluster.eks_cluster
-  ]
+  irsa_oidc_provider_arn          = aws_iam_openid_connect_provider.demo.arn
+  irsa_namespace_service_accounts = ["karpenter:karpenter"]
 
-  cluster_name                     = aws_eks_cluster.eks_cluster.id
-  cluster_identity_oidc_issuer     = aws_eks_cluster.eks_cluster.identity.0.oidc.0.issuer
-  cluster_identity_oidc_issuer_arn = aws_iam_openid_connect_provider.demo.arn
-  aws_region                       = "us-east-1"
+  # Since Karpenter is running on an EKS Managed Node group,
+  # we can re-use the role that was created for the node group
+  create_iam_role = false
+  iam_role_arn    = aws_iam_role.node_group_role.arn
 }

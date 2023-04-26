@@ -173,3 +173,8 @@ variable "api_version" {
   description = "kubeconfig api version"
   default = "client.authentication.k8s.io/v1beta1"
 }
+
+variable "provisioner_path" {
+  description = "kubeconfig api version"
+  default = "./provisioner.yml"
+}
