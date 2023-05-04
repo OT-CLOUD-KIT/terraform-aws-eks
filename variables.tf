@@ -156,3 +156,25 @@ description = "List of the desired control plane logging to enable"
 type = list(string)
 default = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
 }
+
+variable "addons" {
+  type = list(object({
+    name    = string
+  }))
+
+  default = [
+  
+    {
+      name    = "aws-ebs-csi-driver"
+    }
+  ]
+}
+variable "api_version" {
+  description = "kubeconfig api version"
+  default = "client.authentication.k8s.io/v1beta1"
+}
+
+variable "provisioner_path" {
+  description = "kubeconfig api version"
+  default = "./provisioner.yml"
+}
