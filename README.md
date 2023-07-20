@@ -109,7 +109,7 @@ output "eks_cluster_arn" {
 | scale_min_size | Define minimum nodes scaling. | number | null | yes |
 | scale_desired_size | Define Desire nodes. | number | null | yes |
 | ssh_key | Define ssh key. | string | null | yes |
-| ami_type | Define ami_type of worker node. | string | null | yes |
+| ami_type | Define ami type of worker node. | string | null | yes |
 | security_group_ids | ssh security group id for ssh. | string | null | yes |
 | kubeconfig_name | name for kube config file. | string | null | yes |
 | config_output_path | path to store kubeconfig file | string | null | yes |
