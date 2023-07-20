@@ -12,6 +12,7 @@ variable "node_groups" {
     tags               = map(string)
     labels             = map(string)
     capacity_type      = string
+    ami_type           = string
   }))
 }
 
