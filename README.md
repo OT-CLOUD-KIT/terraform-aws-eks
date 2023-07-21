@@ -48,6 +48,7 @@ module "petpark_eks_cluster" {
       max_capacity       = 15
       min_capacity       = 2
       capacity_type      = "ON_DEMAND"
+      ami_type           = "AL2_x86_64_GPU"
       tags               = merge(local.common_tags, local.worker_group1_tags)
       labels             = { "node_group" : "worker1" }
     }
@@ -61,6 +62,7 @@ module "petpark_eks_cluster" {
       max_capacity       = 15
       min_capacity       = 2
       capacity_type      = "SPOT"
+      ami_type           = "AL2_x86_64"
       tags               = merge(local.common_tags, local.worker_group1_tags)
       labels             = { "node_group" : "worker2" }
     }
@@ -107,6 +109,7 @@ output "eks_cluster_arn" {
 | scale_min_size | Define minimum nodes scaling. | number | null | yes |
 | scale_desired_size | Define Desire nodes. | number | null | yes |
 | ssh_key | Define ssh key. | string | null | yes |
+| ami_type | Define ami type of worker node. | string | null | yes |
 | security_group_ids | ssh security group id for ssh. | string | null | yes |
 | kubeconfig_name | name for kube config file. | string | null | yes |
 | config_output_path | path to store kubeconfig file | string | null | yes |

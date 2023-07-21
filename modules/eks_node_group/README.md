@@ -17,6 +17,7 @@ module "second_nodegroup" {
   scale_max_size     = 5
   scale_min_size     = 3
   ssh_key            = "default"
+  ami_type           = "AL2_x86_64_GPU"
   security_group_ids = ["sg-0f29d4e4332979101"]
   role_arn           = module.qa_eks_cluster.node_iam_role_arn
 }
