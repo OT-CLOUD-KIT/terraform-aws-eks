@@ -131,3 +131,25 @@ resource "aws_security_group_rule" "cluster_private_access" {
 
   security_group_id = aws_eks_cluster.eks_cluster.vpc_config[0].cluster_security_group_id
 }
+
+resource "aws_eks_addon" "addons" {
+  depends_on = [
+    module.node_group
+  ]
+  cluster_name      = aws_eks_cluster.eks_cluster.id
+  for_each          = { for addon in var.addons : addon.name => addon }
+  addon_name        = each.value.name
+}
+module "karpenter" {
+  source  = "./modules/karpenter"
+
+  cluster_name = var.cluster_name
+
+  irsa_oidc_provider_arn          = aws_iam_openid_connect_provider.demo.arn
+  irsa_namespace_service_accounts = ["karpenter:karpenter"]
+
+  # Since Karpenter is running on an EKS Managed Node group,
+  # we can re-use the role that was created for the node group
+  create_iam_role = false
+  iam_role_arn    = aws_iam_role.node_group_role.arn
+}
