@@ -62,7 +62,7 @@ resource "aws_launch_template" "eks_node_template" {
     }
 
     network_interfaces {
-      associate_pfublic_ip_address  = false
+      associate_public_ip_address  = false
       security_groups              = var.node_groups[count.index].security_group
     }
 

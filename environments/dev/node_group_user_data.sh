@@ -17,9 +17,10 @@ Content-Transfer-Encoding: 7bit
 Content-Disposition: attachment; filename="userdata.txt"
 
 #!/bin/bash
-      set -ex
-      iptables -I INPUT -p tcp -m tcp --dport 10250 -j ACCEPT
-      cd /etc/eks
-      sudo chmod +x bootstrap.sh
+      set -o xtrace
+      sudo service docker start  
+      sudo chmod 666 /var/run/docker.sock
       /etc/eks/bootstrap.sh OT-microservices
+      iptables -I INPUT -p tcp -m tcp --dport 10250 -j ACCEPT 
+      sudo yum install -y https://s3.amazonaws.com/ec2-downloads-windows/SSMAgent/latest/linux_amd64/amazon-ssm-agent.rpm
 --//

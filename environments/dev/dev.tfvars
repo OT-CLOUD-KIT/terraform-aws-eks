@@ -41,6 +41,20 @@ node_groups = [
           effect = "NO_SCHEDULE"
         }
       ]
+    },
+    {
+    name           = "master-node"               
+    instance_type  = "t3.medium"               
+    volume_size    = "20"               
+    security_group = ["sg-0206380f8bf996e47"]      
+    desired_size = 2                
+    max_size     = 2                 
+    min_size     = 1     
+    user_data = "./environments/dev/node_group_user_data.sh"            
+    labels = {
+        "attendance" = "enabled"
+      }            
+    taint = []
     }
 ]
 private_subnets = ["Private-1", "Private-2"]
