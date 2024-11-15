@@ -30,6 +30,9 @@ resource "aws_iam_openid_connect_provider" "eks_oidc_provider" {
   url             = aws_eks_cluster.eks.identity.0.oidc.0.issuer
 } 
 
+data "aws_eks_cluster" "eks" {
+  name = aws_eks_cluster.eks.name
+}
 data "aws_eks_cluster_auth" "eks_auth" {
   name = aws_eks_cluster.eks.name
 }
@@ -45,14 +48,57 @@ data "aws_eks_cluster_auth" "eks_auth" {
   }
 }
 
+resource "aws_security_group" "node_group_sg" {
+  name        = "${var.cluster-name}-node-group-sg"
+  vpc_id      = data.aws_vpc.eks-vpc.id
+  description = "Security group for EKS node group that allows traffic from the EKS cluster"
+
+  # Ingress rule allowing traffic from the default EKS cluster security group
+  ingress {
+    from_port       = 0
+    to_port         = 0
+    protocol        = "-1"  # Allows all protocols
+    security_groups = [data.aws_eks_cluster.eks.vpc_config[0].cluster_security_group_id]
+    description     = "Allow inbound traffic from EKS cluster security group"
+  }
+
+  # Egress rule allowing all outbound traffic (can be customized as needed)
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "${var.cluster-name}-node-group-sg"
+  }
+}
+
 resource "aws_launch_template" "eks_node_template" { 
   count          = length(var.node_groups)
   name           = "${var.node_groups[count.index].name}-launch-template"
   instance_type  = var.node_groups[count.index].instance_type
   image_id       = data.aws_ami.eks_worker.id
   key_name       = "shivam" 
-  user_data      = var.node_groups[count.index].user_data != null ? base64encode(file(var.node_groups[count.index].user_data)) : null
+  user_data = base64encode(<<-EOF
+    MIME-Version: 1.0
+    Content-Type: multipart/mixed; boundary="//"
 
+    --//
+    Content-Type: text/x-shellscript; charset="us-ascii"
+    #!/bin/bash
+    sudo su
+    set -ex
+
+    /etc/eks/bootstrap.sh "OT-microservices" \
+    --b64-cluster-ca "${data.aws_eks_cluster.eks.certificate_authority[0].data}" \
+    --apiserver-endpoint "${data.aws_eks_cluster.eks.endpoint}" \
+    --dns-cluster-ip "172.20.0.10" \
+    --kubelet-extra-args '--max-pods=20' \
+    --use-max-pods false
+  EOF
+  )
    block_device_mappings {
       device_name = "/dev/xvda"
       ebs {
@@ -63,7 +109,8 @@ resource "aws_launch_template" "eks_node_template" {
 
     network_interfaces {
       associate_public_ip_address  = false
-      security_groups              = var.node_groups[count.index].security_group
+      security_groups              = [aws_security_group.node_group_sg.id, aws_eks_cluster.eks.vpc_config[0].cluster_security_group_id]
+                                
     }
 
   tag_specifications {
@@ -98,9 +145,12 @@ resource "aws_eks_node_group" "node_group" {
       effect = taint.value.effect
     }
   }
+  
+ 
+
   launch_template {
     id      = aws_launch_template.eks_node_template[count.index].id
-    version = "$Latest"
+    version = aws_launch_template.eks_node_template[count.index].latest_version
   }
 }
 resource "aws_eks_addon" "addons" {
@@ -120,56 +170,3 @@ resource "aws_eks_addon" "addons" {
 
   depends_on = [aws_eks_cluster.eks]
 }
-
-
-# # Managed Node Group
-# resource "aws_eks_node_group" "eks_node_group" {
-#   cluster_name    = aws_eks_cluster.eks.name
-#   node_group_name = "${var.cluster_name}-node-group"
-#   node_role_arn   = module.iam_roles.iam_roles["${var.cluster_name}-eks-node-group-role"].arn
-#   subnet_ids      = [aws_subnet.private_subnet_1.id, aws_subnet.private_subnet_2.id]
-
-#   scaling_config {
-#     desired_size = 2
-#     max_size     = 3
-#     min_size     = 1
-#   }
-
-#   launch_template {
-#     id      = aws_launch_template.eks_node_template.id
-#     version = "$Latest"
-#   }
-
-#   depends_on = [
-#     aws_eks_cluster.eks
-#   ]
-# }
-
-# resource "aws_launch_template" "eks-launch-template" {
-#     count          = length(var.node_groups)
-#     name           = "${var.node_groups[count.index].name}-launch-template"
-#     instance_type  = var.node_groups[count.index].instance_type
-#     user_data      = var.node_groups[count.index].user_data_file != null ? base64encode(file(var.node_groups[count.index].user_data_file)) : null
-
-#     block_device_mappings {
-#       device_name = "/dev/xvda"
-#       ebs {
-#         volume_size = var.node_groups[count.index].volume_size
-#         volume_type = "gp2"
-#       }
-#     }
-
-#     network_interfaces {
-#       associate_public_ip_address  = false
-#       security_groups              = var.node_groups[count.index].security_group
-#     }
-
-#     tag_specifications {
-#       resource_type = "instance"
-#       tags = {
-#         Name = "${var.node_groups[count.index].name}-node"
-#       }
-#     }
-# }
-
-// node group for eks

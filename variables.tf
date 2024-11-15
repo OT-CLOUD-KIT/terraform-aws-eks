@@ -22,12 +22,11 @@ variable "node_groups" {
     name           = string               
     instance_type  = string               
     volume_size    = number               
-    security_group = list(string)      
+    security_group = string      
     desired_size = number                 
     max_size     = number                 
     min_size     = number                 
-    labels       = map(string)  
-    user_data = string          
+    labels       = map(string)          
     taint = list(object({                 
       key    = string
       value  = string
@@ -45,3 +44,4 @@ variable "eks_addons" {
     version = string
   }))
 }
+
