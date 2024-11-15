@@ -37,3 +37,25 @@ variable "eks_addons" {
     version = string
   }))
 }
+
+variable "eks_ingress" {
+  description = "A list of ingress rules for ecs service"
+  type = list(object({
+    description     = string
+    from_port       = number
+    to_port         = number
+    protocol        = string
+    cidr_blocks     = list(string)
+  }))
+}
+variable "eks_egress" {
+  description = "A list of egress rules for ecs service"
+  type = list(object({
+    description      = string
+    from_port        = number
+    to_port          = number
+    protocol         = string
+    cidr_blocks      = list(string)
+    ipv6_cidr_blocks = list(string)
+  }))
+}

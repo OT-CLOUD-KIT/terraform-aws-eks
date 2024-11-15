@@ -14,4 +14,6 @@ module "eks" {
     private_subnets = var.private_subnets
     node_role = module.iam.eks-roles[1]
     eks_addons = var.eks_addons
+    eks_ingress = var.eks_ingress
+    eks_egress = var.eks_egress
 }
