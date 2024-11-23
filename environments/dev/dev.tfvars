@@ -47,13 +47,14 @@ node_groups = [
     instance_type  = "t3.medium"               
     volume_size    = "20"               
     security_group = "sg-0206380f8bf996e47"    
-    desired_size = 2                
-    max_size     = 2                 
-    min_size     = 1     
-    user_data = "./environments/dev/node_group_user_data.sh"            
+    desired_size   = 2                
+    max_size       = 2                 
+    min_size       = 1     
+    user_data      = "./environments/dev/node_group_user_data.sh"          
     labels = {
-        "attendance" = "enabled"
-      }            
+      "attendance" = "enabled"
+    }
+    kubelet_extra_args = "--max-pods=20 --node-labels=attendance=enabled"         
     taint = []
     }
 ]
@@ -92,3 +93,13 @@ eks_egress = [
     ipv6_cidr_blocks = []
   }
 ]
+
+# New variables
+enable_public_endpoint = true                  # Disable public endpoint
+authentication_mode = false                   # Enable API/ConfigMap access
+
+# Set this to "SPOT" to use Spot Instances
+capacity_type = "ON_DEMAND"
+
+# Or, if you want to use On-Demand Instances, you can simply set:
+# capacity_type = "ON_DEMAND"

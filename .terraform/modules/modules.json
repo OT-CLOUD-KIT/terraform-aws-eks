@@ -1,0 +1,1 @@
+{"Modules":[{"Key":"","Source":"","Dir":"."},{"Key":"eks","Source":"./modules/eks","Dir":"modules/eks"},{"Key":"iam","Source":"./modules/iam","Dir":"modules/iam"}]}

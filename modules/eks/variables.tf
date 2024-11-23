@@ -21,7 +21,8 @@ variable "node_groups" {
     desired_size   = number                 
     max_size       = number                 
     min_size       = number                 
-    labels         = map(string)          
+    labels         = map(string)     
+    kubelet_extra_args = string     
     taint = list(object({                 
       key    = string
       value  = string
@@ -75,4 +76,16 @@ variable "enable_public_endpoint" {
   description = "Boolean to enable or disable the public endpoint for the EKS cluster"
   type        = bool
   default     = true
+}
+
+variable "authentication_mode" {
+  description = "Enable or disable the aws-auth ConfigMap for API and node authentication"
+  type        = bool
+  default     = true
+}
+
+variable "capacity_type" {
+  description = "The capacity type for EKS Node Group. Options are 'ON_DEMAND' or 'SPOT'."
+  type        = string
+  default     = "ON_DEMAND"  # Default to ON_DEMAND
 }

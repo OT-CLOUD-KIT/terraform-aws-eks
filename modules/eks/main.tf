@@ -27,6 +27,11 @@ resource "aws_eks_cluster" "eks" {
     endpoint_public_access    = var.enable_public_endpoint
     endpoint_private_access   = !var.enable_public_endpoint
   }
+
+  access_config {
+  authentication_mode = var.authentication_mode ? "API_AND_CONFIG_MAP" : "CONFIG_MAP"
+  bootstrap_cluster_creator_admin_permissions = true
+  }
 }
 
 resource "aws_iam_openid_connect_provider" "eks_oidc_provider" {
@@ -115,7 +120,7 @@ resource "aws_launch_template" "eks_node_template" {
     --b64-cluster-ca "${data.aws_eks_cluster.eks.certificate_authority[0].data}" \
     --apiserver-endpoint "${data.aws_eks_cluster.eks.endpoint}" \
     --dns-cluster-ip "172.20.0.10" \
-    --kubelet-extra-args '--max-pods=20' \
+    --kubelet-extra-args '${var.node_groups[count.index].kubelet_extra_args}' \
     --use-max-pods false
   EOF
   )
@@ -134,9 +139,10 @@ resource "aws_launch_template" "eks_node_template" {
   }
 
   dynamic "instance_market_options" {
-    for_each = var.node_groups[count.index].on_demand ? [] : [1]
+    for_each = var.capacity_type == "SPOT" ? [1] : []
     content {
       market_type = "spot"
+      #spot_price  = var.spot_price  # Using the spot price variable
     }
   }
 
@@ -172,6 +178,8 @@ resource "aws_eks_node_group" "node_group" {
     }
   }
 
+  capacity_type = var.capacity_type
+
   launch_template {
     id      = aws_launch_template.eks_node_template[count.index].id
     version = aws_launch_template.eks_node_template[count.index].latest_version
@@ -190,23 +198,4 @@ resource "aws_eks_addon" "addons" {
   }
 
   depends_on = [aws_eks_cluster.eks]
-}
-
-resource "kubernetes_config_map" "aws_auth" {
-  depends_on = [aws_eks_cluster.eks]
-
-  metadata {
-    name      = "aws-auth"
-    namespace = "kube-system"
-  }
-
-  data = {
-    mapRoles = <<YAML
-    - rolearn: ${var.node_role}
-      username: system:node:{{EC2PrivateDNSName}}
-      groups:
-        - system:bootstrappers
-        - system:nodes
-    YAML
-  }
 }
