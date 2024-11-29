@@ -1,6 +1,9 @@
 variable "cluster-role" {
     type = string
 }
+variable "env" {
+  type = string
+}
 
 variable "cluster_subnets" {
     type = list(string)
@@ -25,7 +28,8 @@ variable "node_groups" {
       key    = string
       value  = string
       effect = string
-    }))   
+    }))
+    tag-name  = string   
     on_demand = bool  # New variable to determine if the group uses On-Demand instances
   }))
 }

@@ -7,6 +7,7 @@ module "iam" {
 module "eks" {
   source                   = "./modules/eks"
   depends_on               = [module.iam]
+  env                      = var.env
   cluster_subnets          = var.cluster_subnets
   cluster-name             = var.cluster-name
   cluster-role             = module.iam.eks-roles[0]

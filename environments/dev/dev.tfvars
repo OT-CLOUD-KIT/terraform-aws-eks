@@ -20,6 +20,7 @@ node-policy = [
 
 cluster_subnets = ["Public-1", "Public-2"]
 cluster-name    = "OT-microservices"
+env = "dev"
 
 node_groups = [
     # {
@@ -56,6 +57,7 @@ node_groups = [
     }
     kubelet_extra_args = "--max-pods=20 --node-labels=attendance=enabled"         
     taint = []
+    tag-name = null
     }
 ]
 private_subnets = ["Private-1", "Private-2"]

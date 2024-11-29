@@ -5,6 +5,9 @@ variable "roles" {
     assume_policy   = string                                     
   }))
 }
+variable "env" {
+  type = string
+}
 variable "cluster-policy" {
     type = list(string)
 }
@@ -27,7 +30,8 @@ variable "node_groups" {
     max_size       = number                 
     min_size       = number                 
     labels         = map(string)
-    kubelet_extra_args = string         
+    kubelet_extra_args = string    
+    tag-name       = string     
     taint = list(object({                 
       key    = string
       value  = string
