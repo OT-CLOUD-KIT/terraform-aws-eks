@@ -12,13 +12,14 @@ variable "cluster_subnets" {
 variable "cluster-name" {
     type = string
 }
-
+variable "vpc_id" {
+  type = string
+}
 variable "node_groups" {
   type = list(object({
     name           = string               
     instance_type  = string               
-    volume_size    = number               
-    security_group = string      
+    volume_size    = number                    
     desired_size   = number                 
     max_size       = number                 
     min_size       = number                 
@@ -29,8 +30,7 @@ variable "node_groups" {
       value  = string
       effect = string
     }))
-    tag-name  = string   
-    on_demand = bool  # New variable to determine if the group uses On-Demand instances
+    tag-name  = string
   }))
 }
 

@@ -1,5 +1,5 @@
 data "aws_vpc" "eks-vpc" {
-  id = "vpc-082129ed7e8f98076"
+  id = var.vpc_id
 }
 
 data "aws_subnet" "subnets" {
@@ -142,21 +142,18 @@ resource "aws_launch_template" "eks_node_template" {
     for_each = var.capacity_type == "SPOT" ? [1] : []
     content {
       market_type = "spot"
-      #spot_price  = var.spot_price  # Using the spot price variable
     }
   }
 
   tag_specifications {
     resource_type = "instance"
     tags = {
-      # Name = "${var.node_groups[count.index].name}-node"
       Name = coalesce(var.node_groups[count.index].tag-name, "${var.env}-app-k8s-${var.node_groups[count.index].name}")
     }
   }
   tag_specifications {
     resource_type = "volume"
     tags = {
-      # Name = "${var.node_groups[count.index].name}-node"
       Name = coalesce(var.node_groups[count.index].tag-name, "${var.env}-app-k8s-${var.node_groups[count.index].name}")
     }
   }
@@ -205,5 +202,5 @@ resource "aws_eks_addon" "addons" {
     Provisioner = "Terraform"
   }
 
-  depends_on = [aws_eks_cluster.eks]
+  depends_on = [aws_eks_cluster.eks, aws_eks_node_group.node_group]
 }

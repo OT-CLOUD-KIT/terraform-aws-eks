@@ -18,9 +18,10 @@ node-policy = [
     "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
 ]
 
-cluster_subnets = ["Public-1", "Public-2"]
+cluster_subnets = ["my-subnet", "my-subnet-2"]
 cluster-name    = "OT-microservices"
 env = "dev"
+vpc_id = "vpc-0f12691338bc86bd5"
 
 node_groups = [
     # {
@@ -46,12 +47,10 @@ node_groups = [
     {
     name           = "master-node"               
     instance_type  = "t3.medium"               
-    volume_size    = "20"               
-    security_group = "sg-0206380f8bf996e47"    
+    volume_size    = "20"                  
     desired_size   = 2                
     max_size       = 2                 
-    min_size       = 1     
-    user_data      = "./environments/dev/node_group_user_data.sh"          
+    min_size       = 1            
     labels = {
       "attendance" = "enabled"
     }
@@ -60,7 +59,7 @@ node_groups = [
     tag-name = null
     }
 ]
-private_subnets = ["Private-1", "Private-2"]
+private_subnets = ["private-1", "private-2"]
 eks_addons = [
      { name = "vpc-cni", version = "v1.18.6-eksbuild.1" },           # Example version for VPC CNI compatible with 1.31          # Example version for CoreDNS compatible with 1.31
     { name = "kube-proxy", version = "v1.31.1-eksbuild.2" },

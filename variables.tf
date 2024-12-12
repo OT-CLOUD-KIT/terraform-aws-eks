@@ -8,6 +8,9 @@ variable "roles" {
 variable "env" {
   type = string
 }
+variable "vpc_id"{
+  type = string
+}
 variable "cluster-policy" {
     type = list(string)
 }
@@ -24,14 +27,13 @@ variable "node_groups" {
   type = list(object({
     name           = string               
     instance_type  = string               
-    volume_size    = number               
-    security_group = string      
+    volume_size    = number                   
     desired_size   = number                 
     max_size       = number                 
     min_size       = number                 
     labels         = map(string)
     kubelet_extra_args = string    
-    tag-name       = string     
+    tag-name       = string
     taint = list(object({                 
       key    = string
       value  = string
