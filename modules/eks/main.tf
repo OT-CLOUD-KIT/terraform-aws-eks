@@ -64,9 +64,9 @@ resource "aws_security_group" "node_group_sg" {
   description = "Security group for EKS node group that allows traffic from the EKS cluster"
 
   ingress {
-    from_port       = 0
-    to_port         = 0
-    protocol        = "-1"
+    from_port       = 443
+    to_port         = 443
+    protocol        = "https"
     security_groups = [data.aws_eks_cluster.eks.vpc_config[0].cluster_security_group_id]
     description     = "Allow inbound traffic from EKS cluster security group"
   }
@@ -104,7 +104,7 @@ resource "aws_launch_template" "eks_node_template" {
   name          = "${var.node_groups[count.index].name}-launch-template"
   instance_type = var.node_groups[count.index].instance_type
   image_id      = data.aws_ami.eks_worker.id
-  key_name      = "shivam"
+  key_name      = var.key_pair
 
   user_data = base64encode(<<-EOF
     MIME-Version: 1.0
@@ -116,7 +116,7 @@ resource "aws_launch_template" "eks_node_template" {
     sudo su
     set -ex
 
-    /etc/eks/bootstrap.sh "OT-microservices" \
+    /etc/eks/bootstrap.sh '${var.cluster-name}' \
     --b64-cluster-ca "${data.aws_eks_cluster.eks.certificate_authority[0].data}" \
     --apiserver-endpoint "${data.aws_eks_cluster.eks.endpoint}" \
     --dns-cluster-ip "172.20.0.10" \

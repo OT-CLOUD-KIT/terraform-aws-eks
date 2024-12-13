@@ -22,6 +22,7 @@ cluster_subnets = ["my-subnet", "my-subnet-2"]
 cluster-name    = "OT-microservices"
 env = "dev"
 vpc_id = "vpc-0f12691338bc86bd5"
+key_pair = "private"
 
 node_groups = [
     # {

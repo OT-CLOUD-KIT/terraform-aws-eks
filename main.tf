@@ -13,6 +13,7 @@ module "eks" {
   cluster-name             = var.cluster-name
   cluster-role             = module.iam.eks-roles[0]
   node_groups              = var.node_groups
+  key_pair                 = var.key_pair
   private_subnets          = var.private_subnets
   node_role                = module.iam.eks-roles[1]
   eks_addons               = var.eks_addons

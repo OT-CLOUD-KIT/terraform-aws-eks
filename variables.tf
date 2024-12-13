@@ -41,6 +41,9 @@ variable "node_groups" {
     }))   
   }))
 }
+variable "key_pair" {
+  type = string
+}
 variable "private_subnets" {
     type = list(string)
 }

@@ -41,6 +41,9 @@ variable "private_subnets" {
 variable "node_role" {
     type = string
 }
+variable "key_pair"{
+  type = string
+}
 
 variable "eks_addons" {
   description = "List of EKS addons to install"
