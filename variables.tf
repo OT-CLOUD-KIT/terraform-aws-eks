@@ -65,6 +65,7 @@ variable "eks_ingress" {
     cidr_blocks     = list(string)
   }))
 }
+
 variable "eks_egress" {
   description = "A list of egress rules for ecs service"
   type = list(object({
@@ -93,3 +94,23 @@ variable "capacity_type" {
   type        = string
   default     = "ON_DEMAND"  # Default value is ON_DEMAND, you can change it to SPOT when needed
 }
+
+##########Autoscaler-Variables############
+variable "enable_cluster_autoscaler" {
+  description = "Enable or disable the EKS Cluster Autoscaler"
+  type        = bool
+  default     = true
+}
+
+variable "aws_region" {
+  description = "The AWS region to deploy resources"
+  type        = string
+  default     = "ap-south-1"
+}
+
+
+variable "node_role" {
+    type = string
+    default = "eksnodegroup_role"
+}
+

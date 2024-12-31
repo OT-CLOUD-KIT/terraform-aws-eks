@@ -23,14 +23,14 @@ resource "aws_eks_cluster" "eks" {
   role_arn = var.cluster-role
 
   vpc_config {
-    subnet_ids                = [for subnet in data.aws_subnet.subnets : subnet.id]
-    endpoint_public_access    = var.enable_public_endpoint
-    endpoint_private_access   = !var.enable_public_endpoint
+    subnet_ids              = [for subnet in data.aws_subnet.subnets : subnet.id]
+    endpoint_public_access  = var.enable_public_endpoint
+    endpoint_private_access = !var.enable_public_endpoint
   }
 
   access_config {
-  authentication_mode = var.authentication_mode ? "API_AND_CONFIG_MAP" : "CONFIG_MAP"
-  bootstrap_cluster_creator_admin_permissions = true
+    authentication_mode                         = var.authentication_mode ? "API_AND_CONFIG_MAP" : "CONFIG_MAP"
+    bootstrap_cluster_creator_admin_permissions = true
   }
 }
 
@@ -47,6 +47,12 @@ data "aws_eks_cluster" "eks" {
 data "aws_eks_cluster_auth" "eks_auth" {
   name = aws_eks_cluster.eks.name
 }
+
+locals {
+  cluster_dns_ip = cidrhost(data.aws_eks_cluster.eks.kubernetes_network_config[0].service_ipv4_cidr, 10)
+}
+
+
 
 data "aws_ami" "eks_worker" {
   most_recent = true
@@ -66,7 +72,7 @@ resource "aws_security_group" "node_group_sg" {
   ingress {
     from_port       = 443
     to_port         = 443
-    protocol        = "https"
+    protocol        = "tcp" # Changed from 'https' to 'tcp'
     security_groups = [data.aws_eks_cluster.eks.vpc_config[0].cluster_security_group_id]
     description     = "Allow inbound traffic from EKS cluster security group"
   }
@@ -99,6 +105,16 @@ resource "aws_security_group" "node_group_sg" {
   }
 }
 
+resource "aws_security_group_rule" "eks_cluster_sg_rule" {
+  for_each = var.eks_cluster_sg_rules
+  type        = "ingress"
+  from_port   = each.value.from_port
+  to_port     = each.value.to_port
+  protocol    = "tcp"
+  source_security_group_id = each.value.source_security_group_id
+  security_group_id = aws_eks_cluster.eks.vpc_config[0].cluster_security_group_id 
+}
+
 resource "aws_launch_template" "eks_node_template" {
   count         = length(var.node_groups)
   name          = "${var.node_groups[count.index].name}-launch-template"
@@ -119,7 +135,7 @@ resource "aws_launch_template" "eks_node_template" {
     /etc/eks/bootstrap.sh '${var.cluster-name}' \
     --b64-cluster-ca "${data.aws_eks_cluster.eks.certificate_authority[0].data}" \
     --apiserver-endpoint "${data.aws_eks_cluster.eks.endpoint}" \
-    --dns-cluster-ip "172.20.0.10" \
+    --dns-cluster-ip "${local.cluster_dns_ip}" \
     --kubelet-extra-args '${var.node_groups[count.index].kubelet_extra_args}' \
     --use-max-pods false
   EOF
@@ -203,4 +219,56 @@ resource "aws_eks_addon" "addons" {
   }
 
   depends_on = [aws_eks_cluster.eks, aws_eks_node_group.node_group]
+}
+
+###########################autoscaler###################
+
+data "aws_eks_cluster_auth" "eks" {
+  name = data.aws_eks_cluster.eks.name
+}
+
+provider "kubernetes" {
+  host                   = data.aws_eks_cluster.eks.endpoint
+  cluster_ca_certificate = base64decode(data.aws_eks_cluster.eks.certificate_authority[0].data)
+  token                  = data.aws_eks_cluster_auth.eks.token
+}
+
+provider "helm" {
+  kubernetes {
+    host                   = data.aws_eks_cluster.eks.endpoint
+    cluster_ca_certificate = base64decode(data.aws_eks_cluster.eks.certificate_authority[0].data)
+    token                  = data.aws_eks_cluster_auth.eks.token
+  }
+}
+
+# Helm Deployment for Cluster Autoscaler
+resource "helm_release" "cluster_autoscaler" {
+  count      = var.enable_cluster_autoscaler ? 1 : 0
+  name       = "cluster-autoscaler"
+  repository = "https://kubernetes.github.io/autoscaler"
+  chart      = "cluster-autoscaler"
+  namespace  = "kube-system"
+
+  set {
+    name  = "autoDiscovery.clusterName"
+    value = var.cluster-name
+  }
+
+  set {
+    name  = "awsRegion"
+    value = var.aws_region
+  }
+
+  set {
+    name  = "rbac.serviceAccount.create"
+    value = "true" # Ensure serviceAccount creation is handled externally
+  }
+
+  set {
+    name  = "rbac.serviceAccount.name"
+    value = "cluster-autoscaler" # Ensure this matches the created service account
+  }
+
+  # Add dependency on the security group rule
+  depends_on = [aws_security_group_rule.eks_cluster_sg_rule]
 }

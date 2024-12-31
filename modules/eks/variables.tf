@@ -40,6 +40,7 @@ variable "private_subnets" {
 
 variable "node_role" {
     type = string
+    default = "eksnodegroup_role"
 }
 variable "key_pair"{
   type = string
@@ -93,4 +94,40 @@ variable "capacity_type" {
   description = "The capacity type for EKS Node Group. Options are 'ON_DEMAND' or 'SPOT'."
   type        = string
   default     = "ON_DEMAND"  # Default to ON_DEMAND
+}
+
+
+########################################################################################
+# Enable or disable Cluster Autoscaler
+variable "enable_cluster_autoscaler" {
+  description = "Enable or disable the EKS Cluster Autoscaler"
+  type        = bool
+  default     = true
+}
+
+# AWS Region
+variable "aws_region" {
+  description = "The AWS region to deploy resources"
+  type        = string
+  default     = "ap-south-1"
+}
+
+# # EKS Cluster Name
+# variable "cluster_name" {
+#   description = "The name of the EKS cluster"
+#   type        = string
+# }
+
+
+output "node_group_role_arn" {
+  value       = var.node_role
+  description = "ARN of the IAM role associated with the EKS node group."
+}
+variable "eks_cluster_sg_rules" {
+  description = "List of EKS cluster security group rules"
+  type = map(object({
+    from_port         = number
+    to_port           = number
+    source_security_group_id = string
+  }))
 }
