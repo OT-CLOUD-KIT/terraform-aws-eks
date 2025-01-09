@@ -1,48 +1,48 @@
 variable "cluster-role" {
-    type = string
+  type = string
 }
 variable "env" {
   type = string
 }
 
 variable "cluster_subnets" {
-    type = list(string)
+  type = list(string)
 }
 
 variable "cluster-name" {
-    type = string
+  type = string
 }
 variable "vpc_id" {
   type = string
 }
 variable "node_groups" {
   type = list(object({
-    name           = string               
-    instance_type  = string               
-    volume_size    = number                    
-    desired_size   = number                 
-    max_size       = number                 
-    min_size       = number                 
-    labels         = map(string)     
-    kubelet_extra_args = string     
-    taint = list(object({                 
+    name               = string
+    instance_type      = string
+    volume_size        = number
+    desired_size       = number
+    max_size           = number
+    min_size           = number
+    labels             = map(string)
+    kubelet_extra_args = string
+    taint = list(object({
       key    = string
       value  = string
       effect = string
     }))
-    tag-name  = string
+    tag-name = string
   }))
 }
 
 variable "private_subnets" {
-    type = list(string)
+  type = list(string)
 }
 
 variable "node_role" {
-    type = string
-    default = "eksnodegroup_role"
+  type    = string
+  default = "eksnodegroup_role"
 }
-variable "key_pair"{
+variable "key_pair" {
   type = string
 }
 
@@ -57,11 +57,11 @@ variable "eks_addons" {
 variable "eks_ingress" {
   description = "A list of ingress rules for ecs service"
   type = list(object({
-    description     = string
-    from_port       = number
-    to_port         = number
-    protocol        = string
-    cidr_blocks     = list(string)
+    description = string
+    from_port   = number
+    to_port     = number
+    protocol    = string
+    cidr_blocks = list(string)
   }))
 }
 
@@ -93,7 +93,7 @@ variable "authentication_mode" {
 variable "capacity_type" {
   description = "The capacity type for EKS Node Group. Options are 'ON_DEMAND' or 'SPOT'."
   type        = string
-  default     = "ON_DEMAND"  # Default to ON_DEMAND
+  default     = "ON_DEMAND" # Default to ON_DEMAND
 }
 
 
@@ -126,8 +126,8 @@ output "node_group_role_arn" {
 variable "eks_cluster_sg_rules" {
   description = "List of EKS cluster security group rules"
   type = map(object({
-    from_port         = number
-    to_port           = number
+    from_port                = number
+    to_port                  = number
     source_security_group_id = string
   }))
 }

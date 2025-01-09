@@ -1,22 +1,22 @@
 roles = [
   {
-    name             = "ekscluster_role"
-    assume_policy    = "./environments/dev/eks_cluster_assume_policy.json"
+    name          = "ekscluster_role"
+    assume_policy = "./environments/dev/eks_cluster_assume_policy.json"
   },
   {
-    name             = "eksnodegroup_role"
-    assume_policy    = "./environments/dev/eks_node_group_assume_policy.json"
+    name          = "eksnodegroup_role"
+    assume_policy = "./environments/dev/eks_node_group_assume_policy.json"
   }
 ]
 
 cluster-policy = [
-    "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy",
-    "arn:aws:iam::aws:policy/AmazonEKSVPCResourceController"
+  "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy",
+  "arn:aws:iam::aws:policy/AmazonEKSVPCResourceController"
 ]
 node-policy = [
-    "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy",
-    "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly",
-    "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
+  "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy",
+  "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly",
+  "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
 ]
 
 cluster_subnets = ["sd2-dr-pvt-subnet-1", "sd2-dr-pvt-subnet-2", "sd2-dr-pvt-subnet-3"]
@@ -27,30 +27,30 @@ key_pair        = "opstree"
 
 node_groups = [
   {
-    name              = "sd2-dr-worker-1"
-    instance_type     = "t3a.medium"
-    volume_size       = 20
-    desired_size      = 2
-    max_size          = 20
-    min_size          = 1
-    user_data         = "./environments/dev/node_group_user_data.sh"
-    labels            = { "sd2-dr-worker-1" = "enabled" }
+    name               = "sd2-dr-worker-1"
+    instance_type      = "t3a.medium"
+    volume_size        = 20
+    desired_size       = 2
+    max_size           = 20
+    min_size           = 1
+    user_data          = "./environments/dev/node_group_user_data.sh"
+    labels             = { "sd2-dr-worker-1" = "enabled" }
     kubelet_extra_args = "--max-pods=20 --node-labels=sd2-dr-worker-1=enabled"
-    taint             = []
-    tag-name          = null
+    taint              = []
+    tag-name           = null
   },
   {
-    name              = "sd2-dr-worker-2"
-    instance_type     = "t3a.medium"
-    volume_size       = 20
-    desired_size      = 2
-    max_size          = 20
-    min_size          = 1
-    user_data         = "./environments/dev/node_group_user_data.sh"
-    labels            = { "sd2-dr-worker-2" = "enabled" }
+    name               = "sd2-dr-worker-2"
+    instance_type      = "t3a.medium"
+    volume_size        = 20
+    desired_size       = 2
+    max_size           = 20
+    min_size           = 1
+    user_data          = "./environments/dev/node_group_user_data.sh"
+    labels             = { "sd2-dr-worker-2" = "enabled" }
     kubelet_extra_args = "--max-pods=20 --node-labels=sd2-dr-worker-2=enabled"
-    taint             = []
-    tag-name          = null
+    taint              = []
+    tag-name           = null
   }
 ]
 
@@ -93,7 +93,7 @@ eks_egress = [
 ]
 
 # New variables
-enable_public_endpoint = false
-authentication_mode    = true
+enable_public_endpoint    = false
+authentication_mode       = true
 enable_cluster_autoscaler = true
-capacity_type          = "ON_DEMAND"
+capacity_type             = "ON_DEMAND"

@@ -1,51 +1,51 @@
 variable "roles" {
   description = "List of IAM roles to create."
   type = list(object({
-    name            = string                       
-    assume_policy   = string                                     
+    name          = string
+    assume_policy = string
   }))
 }
 variable "env" {
   type = string
 }
-variable "vpc_id"{
+variable "vpc_id" {
   type = string
 }
 variable "cluster-policy" {
-    type = list(string)
+  type = list(string)
 }
 variable "node-policy" {
-    type = list(string)
+  type = list(string)
 }
 variable "cluster_subnets" {
-    type = list(string)
+  type = list(string)
 }
-variable "cluster-name"{
-    type = string
+variable "cluster-name" {
+  type = string
 }
 variable "node_groups" {
   type = list(object({
-    name           = string               
-    instance_type  = string               
-    volume_size    = number                   
-    desired_size   = number                 
-    max_size       = number                 
-    min_size       = number                 
-    labels         = map(string)
-    kubelet_extra_args = string    
-    tag-name       = string
-    taint = list(object({                 
+    name               = string
+    instance_type      = string
+    volume_size        = number
+    desired_size       = number
+    max_size           = number
+    min_size           = number
+    labels             = map(string)
+    kubelet_extra_args = string
+    tag-name           = string
+    taint = list(object({
       key    = string
       value  = string
       effect = string
-    }))   
+    }))
   }))
 }
 variable "key_pair" {
   type = string
 }
 variable "private_subnets" {
-    type = list(string)
+  type = list(string)
 }
 variable "eks_addons" {
   description = "List of EKS addons to install"
@@ -58,11 +58,11 @@ variable "eks_addons" {
 variable "eks_ingress" {
   description = "A list of ingress rules for ecs service"
   type = list(object({
-    description     = string
-    from_port       = number
-    to_port         = number
-    protocol        = string
-    cidr_blocks     = list(string)
+    description = string
+    from_port   = number
+    to_port     = number
+    protocol    = string
+    cidr_blocks = list(string)
   }))
 }
 
@@ -92,7 +92,7 @@ variable "authentication_mode" {
 variable "capacity_type" {
   description = "The capacity type for EKS Node Group. Options are 'ON_DEMAND' or 'SPOT'."
   type        = string
-  default     = "ON_DEMAND"  # Default value is ON_DEMAND, you can change it to SPOT when needed
+  default     = "ON_DEMAND" # Default value is ON_DEMAND, you can change it to SPOT when needed
 }
 
 ##########Autoscaler-Variables############
@@ -110,7 +110,7 @@ variable "aws_region" {
 
 
 variable "node_role" {
-    type = string
-    default = "eksnodegroup_role"
+  type    = string
+  default = "eksnodegroup_role"
 }
 

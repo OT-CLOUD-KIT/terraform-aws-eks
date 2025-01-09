@@ -106,13 +106,13 @@ resource "aws_security_group" "node_group_sg" {
 }
 
 resource "aws_security_group_rule" "eks_cluster_sg_rule" {
-  for_each = var.eks_cluster_sg_rules
-  type        = "ingress"
-  from_port   = each.value.from_port
-  to_port     = each.value.to_port
-  protocol    = "tcp"
+  for_each                 = var.eks_cluster_sg_rules
+  type                     = "ingress"
+  from_port                = each.value.from_port
+  to_port                  = each.value.to_port
+  protocol                 = "tcp"
   source_security_group_id = each.value.source_security_group_id
-  security_group_id = aws_eks_cluster.eks.vpc_config[0].cluster_security_group_id 
+  security_group_id        = aws_eks_cluster.eks.vpc_config[0].cluster_security_group_id
 }
 
 resource "aws_launch_template" "eks_node_template" {
