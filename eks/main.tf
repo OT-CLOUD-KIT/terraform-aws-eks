@@ -1,29 +1,9 @@
-data "aws_vpc" "eks-vpc" {
-  id = var.vpc_id
-}
-
-data "aws_subnet" "subnets" {
-  count = length(var.cluster_subnets)
-  filter {
-    name   = "tag:Name"
-    values = [var.cluster_subnets[count.index]]
-  }
-}
-
-data "aws_subnet" "private_subnets" {
-  count = length(var.private_subnets)
-  filter {
-    name   = "tag:Name"
-    values = [var.private_subnets[count.index]]
-  }
-}
-
 resource "aws_eks_cluster" "eks" {
-  name     = var.cluster-name
+  name     = var.cluster_name
   role_arn = var.cluster-role
 
   vpc_config {
-    subnet_ids              = [for subnet in data.aws_subnet.subnets : subnet.id]
+    subnet_ids              = [for subnet_id in var.subnet_ids : subnet_id]
     endpoint_public_access  = var.enable_public_endpoint
     endpoint_private_access = !var.enable_public_endpoint
   }
@@ -35,9 +15,9 @@ resource "aws_eks_cluster" "eks" {
 }
 
 resource "aws_iam_openid_connect_provider" "eks_oidc_provider" {
-  client_id_list  = ["sts.amazonaws.com"]
-  thumbprint_list = ["9e99a48a9960b14926bb7f3b02e22da0b4dd9f6c"]
-  url             = aws_eks_cluster.eks.identity.0.oidc.0.issuer
+  client_id_list = ["sts.amazonaws.com"]
+  # thumbprint_list = ["9e99a48a9960b14926bb7f3b02e22da0b4dd9f6c"]
+  url = aws_eks_cluster.eks.identity.0.oidc.0.issuer
 }
 
 data "aws_eks_cluster" "eks" {
@@ -49,7 +29,7 @@ data "aws_eks_cluster_auth" "eks_auth" {
 }
 
 locals {
-  cluster_dns_ip = cidrhost(data.aws_eks_cluster.eks.kubernetes_network_config[0].service_ipv4_cidr, 10)
+  cluster_dns_ip = cidrhost(aws_eks_cluster.eks.kubernetes_network_config[0].service_ipv4_cidr, 10)
 }
 
 
@@ -65,15 +45,15 @@ data "aws_ami" "eks_worker" {
 }
 
 resource "aws_security_group" "node_group_sg" {
-  name        = "${var.cluster-name}-node-group-sg"
-  vpc_id      = data.aws_vpc.eks-vpc.id
+  name        = "${var.cluster_name}-node-group-sg"
+  vpc_id      = var.vpc_id
   description = "Security group for EKS node group that allows traffic from the EKS cluster"
 
   ingress {
     from_port       = 443
     to_port         = 443
     protocol        = "tcp" # Changed from 'https' to 'tcp'
-    security_groups = [data.aws_eks_cluster.eks.vpc_config[0].cluster_security_group_id]
+    security_groups = [aws_eks_cluster.eks.vpc_config[0].cluster_security_group_id]
     description     = "Allow inbound traffic from EKS cluster security group"
   }
 
@@ -101,7 +81,7 @@ resource "aws_security_group" "node_group_sg" {
   }
 
   tags = {
-    Name = "${var.cluster-name}-node-group-sg"
+    Name = "${var.cluster_name}-node-group-sg"
   }
 }
 
@@ -132,9 +112,9 @@ resource "aws_launch_template" "eks_node_template" {
     sudo su
     set -ex
 
-    /etc/eks/bootstrap.sh '${var.cluster-name}' \
-    --b64-cluster-ca "${data.aws_eks_cluster.eks.certificate_authority[0].data}" \
-    --apiserver-endpoint "${data.aws_eks_cluster.eks.endpoint}" \
+    /etc/eks/bootstrap.sh '${var.cluster_name}' \
+    --b64-cluster-ca "${aws_eks_cluster.eks.certificate_authority[0].data}" \
+    --apiserver-endpoint "${aws_eks_cluster.eks.endpoint}" \
     --dns-cluster-ip "${local.cluster_dns_ip}" \
     --kubelet-extra-args '${var.node_groups[count.index].kubelet_extra_args}' \
     --use-max-pods false
@@ -164,13 +144,13 @@ resource "aws_launch_template" "eks_node_template" {
   tag_specifications {
     resource_type = "instance"
     tags = {
-      Name = coalesce(var.node_groups[count.index].tag-name, "${var.env}-app-k8s-${var.node_groups[count.index].name}")
+      Name = coalesce(var.node_groups[count.index].tag_name, "${var.env}-app-k8s-${var.node_groups[count.index].name}")
     }
   }
   tag_specifications {
     resource_type = "volume"
     tags = {
-      Name = coalesce(var.node_groups[count.index].tag-name, "${var.env}-app-k8s-${var.node_groups[count.index].name}")
+      Name = coalesce(var.node_groups[count.index].tag_name, "${var.env}-app-k8s-${var.node_groups[count.index].name}")
     }
   }
 }
@@ -180,7 +160,7 @@ resource "aws_eks_node_group" "node_group" {
   cluster_name    = aws_eks_cluster.eks.name
   node_group_name = var.node_groups[count.index].name
   node_role_arn   = var.node_role
-  subnet_ids      = [for subnet in data.aws_subnet.private_subnets : subnet.id]
+  subnet_ids      = [for subnet_id in var.subnet_ids : subnet_id]
 
   scaling_config {
     desired_size = var.node_groups[count.index].desired_size
@@ -214,7 +194,7 @@ resource "aws_eks_addon" "addons" {
   addon_version = var.eks_addons[count.index].version
 
   tags = {
-    Name        = "${var.cluster-name}-${var.eks_addons[count.index].name}-addon"
+    Name        = "${var.cluster_name}-${var.eks_addons[count.index].name}-addon"
     Provisioner = "Terraform"
   }
 
@@ -223,23 +203,19 @@ resource "aws_eks_addon" "addons" {
 
 ###########################autoscaler###################
 
-data "aws_eks_cluster_auth" "eks" {
-  name = data.aws_eks_cluster.eks.name
-}
+# provider "kubernetes" {
+#   host                   = aws_eks_cluster.eks.endpoint
+#   cluster_ca_certificate = base64decode(aws_eks_cluster.eks.certificate_authority[0].data)
+#   token                  = aws_eks_cluster_auth.eks.token
+# }
 
-provider "kubernetes" {
-  host                   = data.aws_eks_cluster.eks.endpoint
-  cluster_ca_certificate = base64decode(data.aws_eks_cluster.eks.certificate_authority[0].data)
-  token                  = data.aws_eks_cluster_auth.eks.token
-}
-
-provider "helm" {
-  kubernetes {
-    host                   = data.aws_eks_cluster.eks.endpoint
-    cluster_ca_certificate = base64decode(data.aws_eks_cluster.eks.certificate_authority[0].data)
-    token                  = data.aws_eks_cluster_auth.eks.token
-  }
-}
+# provider "helm" {
+#   kubernetes {
+#     host                   = aws_eks_cluster.eks.endpoint
+#     cluster_ca_certificate = base64decode(aws_eks_cluster.eks.certificate_authority[0].data)
+#     token                  = aws_eks_cluster_auth.eks.token
+#   }
+# }
 
 # Helm Deployment for Cluster Autoscaler
 resource "helm_release" "cluster_autoscaler" {
@@ -251,7 +227,7 @@ resource "helm_release" "cluster_autoscaler" {
 
   set {
     name  = "autoDiscovery.clusterName"
-    value = var.cluster-name
+    value = var.cluster_name
   }
 
   set {

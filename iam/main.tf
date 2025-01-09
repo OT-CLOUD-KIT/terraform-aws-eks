@@ -10,15 +10,15 @@ resource "aws_iam_role" "eks-role" {
 
 
 # Attach Managed Policies to IAM Roles
-resource "aws_iam_role_policy_attachment" "eks-cluster-policy" {
-  count      = length(var.cluster-policy)
+resource "aws_iam_role_policy_attachment" "eks-cluster_policy" {
+  count      = length(var.cluster_policy)
   role       = aws_iam_role.eks-role[0].name
-  policy_arn = var.cluster-policy[count.index]
+  policy_arn = var.cluster_policy[count.index]
 }
-resource "aws_iam_role_policy_attachment" "eks-node-policy" {
-  count      = length(var.node-policy)
+resource "aws_iam_role_policy_attachment" "eks-node_policy" {
+  count      = length(var.node_policy)
   role       = aws_iam_role.eks-role[1].name
-  policy_arn = var.node-policy[count.index]
+  policy_arn = var.node_policy[count.index]
 }
 
 

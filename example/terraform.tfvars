@@ -9,52 +9,52 @@ roles = [
   }
 ]
 
-cluster-policy = [
+cluster_policy = [
   "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy",
   "arn:aws:iam::aws:policy/AmazonEKSVPCResourceController"
 ]
-node-policy = [
+node_policy = [
   "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy",
   "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly",
   "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
 ]
 
-cluster_subnets = ["sd2-dr-pvt-subnet-1", "sd2-dr-pvt-subnet-2", "sd2-dr-pvt-subnet-3"]
-cluster-name    = "sd2-dr-cluster"
+cluster_subnets = ["rajat-dr-pvt-subnet-1", "rajat-dr-pvt-subnet-2", "rajat-dr-pvt-subnet-3"]
+cluster_name    = "rajat-dr-cluster"
 env             = "dev"
-vpc_id          = "vpc-0fbb5d1097a38da38"
+vpc_id          = "vpc-04e17b61dfc861411"
 key_pair        = "opstree"
 
 node_groups = [
   {
-    name               = "sd2-dr-worker-1"
+    name               = "rajat-dr-worker-1"
     instance_type      = "t3a.medium"
-    volume_size        = 20
-    desired_size       = 2
-    max_size           = 20
+    volume_size        = 8
+    desired_size       = 1
+    max_size           = 8
     min_size           = 1
     user_data          = "./environments/dev/node_group_user_data.sh"
-    labels             = { "sd2-dr-worker-1" = "enabled" }
-    kubelet_extra_args = "--max-pods=20 --node-labels=sd2-dr-worker-1=enabled"
+    labels             = { "rajat-dr-worker-1" = "enabled" }
+    kubelet_extra_args = "--max-pods=20 --node-labels=rajat-dr-worker-1=enabled"
     taint              = []
-    tag-name           = null
+    tag_name           = null
   },
   {
-    name               = "sd2-dr-worker-2"
+    name               = "rajat-dr-worker-2"
     instance_type      = "t3a.medium"
-    volume_size        = 20
-    desired_size       = 2
-    max_size           = 20
+    volume_size        = 8
+    desired_size       = 1
+    max_size           = 8
     min_size           = 1
     user_data          = "./environments/dev/node_group_user_data.sh"
-    labels             = { "sd2-dr-worker-2" = "enabled" }
-    kubelet_extra_args = "--max-pods=20 --node-labels=sd2-dr-worker-2=enabled"
+    labels             = { "rajat-dr-worker-2" = "enabled" }
+    kubelet_extra_args = "--max-pods=20 --node-labels=rajat-dr-worker-2=enabled"
     taint              = []
-    tag-name           = null
+    tag_name           = null
   }
 ]
 
-private_subnets = ["sd2-dr-pvt-subnet-1", "sd2-dr-pvt-subnet-2", "sd2-dr-pvt-subnet-3"]
+subnet_ids = ["subnet-0bb31c6137c07c782", "subnet-0dc35556d7d0acebd"]
 
 eks_addons = [
   { name = "vpc-cni", version = "v1.18.6-eksbuild.1" },
@@ -95,5 +95,6 @@ eks_egress = [
 # New variables
 enable_public_endpoint    = false
 authentication_mode       = true
-enable_cluster_autoscaler = true
+enable_cluster_autoscaler = false
 capacity_type             = "ON_DEMAND"
+aws_region = "us-east-1"

@@ -5,9 +5,9 @@ variable "roles" {
     assume_policy = string
   }))
 }
-variable "cluster-policy" {
+variable "cluster_policy" {
   type = list(string)
 }
-variable "node-policy" {
+variable "node_policy" {
   type = list(string)
 }

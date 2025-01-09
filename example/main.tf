@@ -9,12 +9,13 @@ module "eks" {
   source                    = "../eks"
   env                       = var.env
   vpc_id                    = var.vpc_id
+  subnet_ids                = var.subnet_ids
   cluster_subnets           = var.cluster_subnets
   cluster_name              = var.cluster_name
   cluster-role              = module.iam.eks-roles[0]
   node_groups               = var.node_groups
   key_pair                  = var.key_pair
-  private_subnets           = var.private_subnets
+  # private_subnets           = var.private_subnets
   node_role                 = module.iam.eks-roles[1]
   eks_addons                = var.eks_addons
   eks_ingress               = var.eks_ingress
@@ -28,7 +29,7 @@ module "eks" {
     rule_https = {
       from_port                = 443
       to_port                  = 443
-      source_security_group_id = data.terraform_remote_state.bastion.outputs.bastion_sg_id # Replace with the actual Security Group ID
+      source_security_group_id = "sg-0b9f3bdf7fa53db65" # Replace with the actual Security Group ID
     }
   }
 }
