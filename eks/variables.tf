@@ -19,6 +19,9 @@ variable "vpc_id" {
 variable "subnet_ids" {
   type = list(string)
 }
+variable "node_image_id" {
+  type = string
+}
 
 variable "node_groups" {
   type = list(object({

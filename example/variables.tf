@@ -15,6 +15,9 @@ variable "vpc_id" {
 variable "subnet_ids" {
   type = list(string)
 }
+variable "node_image_id" {
+  type = string
+}
 
 variable "cluster_policy" {
   type = list(string)
@@ -82,7 +85,14 @@ variable "eks_egress" {
     ipv6_cidr_blocks = list(string)
   }))
 }
-
+variable "eks_cluster_sg_rules" {
+  description = "List of EKS cluster security group rules"
+  type = map(object({
+    from_port                = number
+    to_port                  = number
+    source_security_group_id = string
+  }))
+}
 variable "enable_public_endpoint" {
   description = "Enable or disable public endpoint access for the EKS cluster"
   type        = bool

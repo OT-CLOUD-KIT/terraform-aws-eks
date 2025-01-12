@@ -15,6 +15,7 @@ module "eks" {
   cluster-role              = module.iam.eks-roles[0]
   node_groups               = var.node_groups
   key_pair                  = var.key_pair
+  node_image_id             = var.node_image_id 
   # private_subnets           = var.private_subnets
   node_role                 = module.iam.eks-roles[1]
   eks_addons                = var.eks_addons
@@ -25,11 +26,5 @@ module "eks" {
   capacity_type             = var.capacity_type
   enable_cluster_autoscaler = var.enable_cluster_autoscaler
   aws_region                = var.aws_region
-  eks_cluster_sg_rules = {
-    rule_https = {
-      from_port                = 443
-      to_port                  = 443
-      source_security_group_id = "sg-0b9f3bdf7fa53db65" # Replace with the actual Security Group ID
-    }
-  }
+  eks_cluster_sg_rules       = var.eks_cluster_sg_rules
 }

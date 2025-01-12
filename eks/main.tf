@@ -16,7 +16,6 @@ resource "aws_eks_cluster" "eks" {
 
 resource "aws_iam_openid_connect_provider" "eks_oidc_provider" {
   client_id_list = ["sts.amazonaws.com"]
-  # thumbprint_list = ["9e99a48a9960b14926bb7f3b02e22da0b4dd9f6c"]
   url = aws_eks_cluster.eks.identity.0.oidc.0.issuer
 }
 
@@ -34,15 +33,15 @@ locals {
 
 
 
-data "aws_ami" "eks_worker" {
-  most_recent = true
-  owners      = ["602401143452"]
+# data "aws_ami" "eks_worker" {
+#   most_recent = true
+#   owners      = ["602401143452"]
 
-  filter {
-    name   = "name"
-    values = ["amazon-eks-node-1.31-*"]
-  }
-}
+#   filter {
+#     name   = "name"
+#     values = ["amazon-eks-node-1.31-*"]
+#   }
+# }
 
 resource "aws_security_group" "node_group_sg" {
   name        = "${var.cluster_name}-node-group-sg"
@@ -99,7 +98,7 @@ resource "aws_launch_template" "eks_node_template" {
   count         = length(var.node_groups)
   name          = "${var.node_groups[count.index].name}-launch-template"
   instance_type = var.node_groups[count.index].instance_type
-  image_id      = data.aws_ami.eks_worker.id
+  image_id      = var.node_image_id //data.aws_ami.eks_worker.id
   key_name      = var.key_pair
 
   user_data = base64encode(<<-EOF
@@ -135,7 +134,7 @@ resource "aws_launch_template" "eks_node_template" {
   }
 
   dynamic "instance_market_options" {
-    for_each = var.capacity_type == "SPOT" ? [1] : []
+    for_each = var.node_groups[count.index].spot ? [1] : []
     content {
       market_type = "spot"
     }
@@ -179,7 +178,7 @@ resource "aws_eks_node_group" "node_group" {
     }
   }
 
-  capacity_type = var.capacity_type
+  capacity_type = var.node_groups[count.index].capacity_type
 
   launch_template {
     id      = aws_launch_template.eks_node_template[count.index].id
