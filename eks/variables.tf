@@ -32,6 +32,7 @@ variable "node_groups" {
     max_size           = number
     min_size           = number
     labels             = map(string)
+    capacity_type      = string
     kubelet_extra_args = string
     taint = list(object({
       key    = string
@@ -98,11 +99,11 @@ variable "authentication_mode" {
   default     = true
 }
 
-variable "capacity_type" {
-  description = "The capacity type for EKS Node Group. Options are 'ON_DEMAND' or 'SPOT'."
-  type        = string
-  default     = "ON_DEMAND" # Default to ON_DEMAND
-}
+# variable "capacity_type" {
+#   description = "The capacity type for EKS Node Group. Options are 'ON_DEMAND' or 'SPOT'."
+#   type        = string
+#   default     = "ON_DEMAND" # Default to ON_DEMAND
+# }
 
 
 ########################################################################################
@@ -127,10 +128,7 @@ variable "aws_region" {
 # }
 
 
-output "node_group_role_arn" {
-  value       = var.node_role
-  description = "ARN of the IAM role associated with the EKS node group."
-}
+
 variable "eks_cluster_sg_rules" {
   description = "List of EKS cluster security group rules"
   type = map(object({

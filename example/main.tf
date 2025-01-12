@@ -23,7 +23,6 @@ module "eks" {
   eks_egress                = var.eks_egress
   enable_public_endpoint    = var.enable_public_endpoint
   authentication_mode       = var.authentication_mode
-  capacity_type             = var.capacity_type
   enable_cluster_autoscaler = var.enable_cluster_autoscaler
   aws_region                = var.aws_region
   eks_cluster_sg_rules       = var.eks_cluster_sg_rules

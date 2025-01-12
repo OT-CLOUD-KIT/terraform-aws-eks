@@ -40,6 +40,7 @@ variable "node_groups" {
     max_size           = number
     min_size           = number
     labels             = map(string)
+    capacity_type      = string
     kubelet_extra_args = string
     tag_name           = string
     taint = list(object({
@@ -104,11 +105,11 @@ variable "authentication_mode" {
   default     = true
 }
 
-variable "capacity_type" {
-  description = "The capacity type for EKS Node Group. Options are 'ON_DEMAND' or 'SPOT'."
-  type        = string
-  default     = "ON_DEMAND" # Default value is ON_DEMAND, you can change it to SPOT when needed
-}
+# variable "capacity_type" {
+#   description = "The capacity type for EKS Node Group. Options are 'ON_DEMAND' or 'SPOT'."
+#   type        = string
+#   default     = "ON_DEMAND" # Default value is ON_DEMAND, you can change it to SPOT when needed
+# }
 
 ##########Autoscaler-Variables############
 variable "enable_cluster_autoscaler" {
