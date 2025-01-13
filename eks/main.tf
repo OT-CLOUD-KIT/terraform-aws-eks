@@ -1,6 +1,6 @@
 resource "aws_eks_cluster" "eks" {
   name     = var.cluster_name
-  role_arn = var.cluster-role
+  role_arn = var.cluster_role
 
   vpc_config {
     subnet_ids              = [for subnet_id in var.subnet_ids : subnet_id]
@@ -19,29 +19,9 @@ resource "aws_iam_openid_connect_provider" "eks_oidc_provider" {
   url = aws_eks_cluster.eks.identity.0.oidc.0.issuer
 }
 
-data "aws_eks_cluster" "eks" {
-  name = aws_eks_cluster.eks.name
-}
-
-data "aws_eks_cluster_auth" "eks_auth" {
-  name = aws_eks_cluster.eks.name
-}
-
 locals {
   cluster_dns_ip = cidrhost(aws_eks_cluster.eks.kubernetes_network_config[0].service_ipv4_cidr, 10)
 }
-
-
-
-# data "aws_ami" "eks_worker" {
-#   most_recent = true
-#   owners      = ["602401143452"]
-
-#   filter {
-#     name   = "name"
-#     values = ["amazon-eks-node-1.31-*"]
-#   }
-# }
 
 resource "aws_security_group" "node_group_sg" {
   name        = "${var.cluster_name}-node-group-sg"
@@ -134,7 +114,7 @@ resource "aws_launch_template" "eks_node_template" {
   }
 
   dynamic "instance_market_options" {
-    for_each = var.node_groups[count.index].spot ? [1] : []
+    for_each = var.node_groups[count.index].capacity_type == "spot" ? [1] : []
     content {
       market_type = "spot"
     }
@@ -200,50 +180,3 @@ resource "aws_eks_addon" "addons" {
   depends_on = [aws_eks_cluster.eks, aws_eks_node_group.node_group]
 }
 
-###########################autoscaler###################
-
-# provider "kubernetes" {
-#   host                   = aws_eks_cluster.eks.endpoint
-#   cluster_ca_certificate = base64decode(aws_eks_cluster.eks.certificate_authority[0].data)
-#   token                  = aws_eks_cluster_auth.eks.token
-# }
-
-# provider "helm" {
-#   kubernetes {
-#     host                   = aws_eks_cluster.eks.endpoint
-#     cluster_ca_certificate = base64decode(aws_eks_cluster.eks.certificate_authority[0].data)
-#     token                  = aws_eks_cluster_auth.eks.token
-#   }
-# }
-
-# Helm Deployment for Cluster Autoscaler
-resource "helm_release" "cluster_autoscaler" {
-  count      = var.enable_cluster_autoscaler ? 1 : 0
-  name       = "cluster-autoscaler"
-  repository = "https://kubernetes.github.io/autoscaler"
-  chart      = "cluster-autoscaler"
-  namespace  = "kube-system"
-
-  set {
-    name  = "autoDiscovery.clusterName"
-    value = var.cluster_name
-  }
-
-  set {
-    name  = "awsRegion"
-    value = var.aws_region
-  }
-
-  set {
-    name  = "rbac.serviceAccount.create"
-    value = "true" # Ensure serviceAccount creation is handled externally
-  }
-
-  set {
-    name  = "rbac.serviceAccount.name"
-    value = "cluster-autoscaler" # Ensure this matches the created service account
-  }
-
-  # Add dependency on the security group rule
-  depends_on = [aws_security_group_rule.eks_cluster_sg_rule]
-}

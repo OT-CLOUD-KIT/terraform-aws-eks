@@ -10,13 +10,11 @@ module "eks" {
   env                       = var.env
   vpc_id                    = var.vpc_id
   subnet_ids                = var.subnet_ids
-  cluster_subnets           = var.cluster_subnets
   cluster_name              = var.cluster_name
-  cluster-role              = module.iam.eks-roles[0]
+  cluster_role              = module.iam.eks-roles[0]
   node_groups               = var.node_groups
   key_pair                  = var.key_pair
   node_image_id             = var.node_image_id 
-  # private_subnets           = var.private_subnets
   node_role                 = module.iam.eks-roles[1]
   eks_addons                = var.eks_addons
   eks_ingress               = var.eks_ingress

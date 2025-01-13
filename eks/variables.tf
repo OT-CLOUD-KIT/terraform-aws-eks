@@ -1,13 +1,10 @@
-variable "cluster-role" {
+variable "cluster_role" {
   type = string
 }
 variable "env" {
   type = string
 }
 
-variable "cluster_subnets" {
-  type = list(string)
-}
 
 variable "cluster_name" {
   type = string
@@ -43,9 +40,6 @@ variable "node_groups" {
   }))
 }
 
-# variable "private_subnets" {
-#   type = list(string)
-# }
 
 variable "node_role" {
   type    = string

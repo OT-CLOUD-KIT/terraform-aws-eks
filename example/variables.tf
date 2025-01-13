@@ -25,9 +25,6 @@ variable "cluster_policy" {
 variable "node_policy" {
   type = list(string)
 }
-variable "cluster_subnets" {
-  type = list(string)
-}
 variable "cluster_name" {
   type = string
 }
@@ -53,9 +50,7 @@ variable "node_groups" {
 variable "key_pair" {
   type = string
 }
-# variable "private_subnets" {
-#   type = list(string)
-# }
+
 variable "eks_addons" {
   description = "List of EKS addons to install"
   type = list(object({
@@ -104,12 +99,6 @@ variable "authentication_mode" {
   type        = bool
   default     = true
 }
-
-# variable "capacity_type" {
-#   description = "The capacity type for EKS Node Group. Options are 'ON_DEMAND' or 'SPOT'."
-#   type        = string
-#   default     = "ON_DEMAND" # Default value is ON_DEMAND, you can change it to SPOT when needed
-# }
 
 ##########Autoscaler-Variables############
 variable "enable_cluster_autoscaler" {

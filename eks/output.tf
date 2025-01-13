@@ -6,11 +6,9 @@ output "node_role_arn" {
   value       = var.node_role
   description = "ARN of the IAM role associated with the EKS node group."
 }
-# output "vpc_id" {
-#   value       = data.aws_vpc.eks_vpc.id
-#   description = "The ID of the VPC used for the EKS cluster."
-# }
-output "node_group_role_arn" {
-  value       = var.node_role
-  description = "ARN of the IAM role associated with the EKS node group."
+
+output "eks_cluster_endpoint" {
+  value       = aws_eks_cluster.eks.endpoint
+  description = "The endpoint of the EKS cluster."
 }
+

@@ -3,3 +3,6 @@
 # .tfstate files
 *.tfstate
 *.tfstate.*
+
+# Ignore AWS folder
+example/aws/

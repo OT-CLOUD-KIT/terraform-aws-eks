@@ -7,18 +7,6 @@
               "Service": "ec2.amazonaws.com"
           },
           "Action": "sts:AssumeRole"
-      },
-      {
-          "Effect": "Allow",
-          "Principal": {
-              "Federated": "arn:aws:iam::543339517346:oidc-provider/oidc.eks.ap-south-1.amazonaws.com/id/B73E46C81DEEAF0FBA6B8BB6C3DDD388"
-          },
-          "Action": "sts:AssumeRoleWithWebIdentity",
-          "Condition": {
-              "StringEquals": {
-                  "oidc.eks.ap-south-1.amazonaws.com/id/B73E46C81DEEAF0FBA6B8BB6C3DDD388:sub": "system:serviceaccount:kube-system:cluster-autoscaler"
-              }
-          }
       }
   ]
 }
