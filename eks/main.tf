@@ -132,6 +132,7 @@ resource "aws_launch_template" "eks_node_template" {
       Name = coalesce(var.node_groups[count.index].tag_name, "${var.env}-app-k8s-${var.node_groups[count.index].name}")
     }
   }
+
 }
 
 resource "aws_eks_node_group" "node_group" {

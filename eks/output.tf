@@ -12,3 +12,7 @@ output "eks_cluster_endpoint" {
   description = "The endpoint of the EKS cluster."
 }
 
+output "region" {
+  description = "AWS region"
+  value       = var.aws_region
+}

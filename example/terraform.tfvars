@@ -17,7 +17,7 @@ node_policy = [
     "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly",
     "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
 ]
-
+aws_region = "us-east-1"
 subnet_ids = ["subnet-0dc35556d7d0acebd", "subnet-0bb31c6137c07c782"]
 cluster_name    = "OT-microservices"
 env = "dev"
@@ -47,7 +47,6 @@ node_groups = [
     kubelet_extra_args = "--max-pods=20 --node-labels=worker-1-nodes=enabled"         
     taint = []
     tag_name = "dev"
-  
   },
   {
     name           = "worker-2-nodes"
