@@ -40,6 +40,8 @@ variable "node_groups" {
     capacity_type      = string
     kubelet_extra_args = string
     tag_name = string
+    node_instance_tags = map(string)
+    node_volume_tags = map(string)
     taint = list(object({
       key    = string
       value  = string

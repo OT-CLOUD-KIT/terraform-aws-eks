@@ -122,15 +122,21 @@ resource "aws_launch_template" "eks_node_template" {
 
   tag_specifications {
     resource_type = "instance"
-    tags = {
+    tags = merge (
+      {
       Name = coalesce(var.node_groups[count.index].tag_name, "${var.env}-app-k8s-${var.node_groups[count.index].name}")
-    }
+    },
+    var.node_groups[count.index].node_instance_tags
+    )
   }
   tag_specifications {
     resource_type = "volume"
-    tags = {
+    tags = merge(
+      {
       Name = coalesce(var.node_groups[count.index].tag_name, "${var.env}-app-k8s-${var.node_groups[count.index].name}")
-    }
+    },
+    var.node_groups[count.index].node_volume_tags
+    )
   }
 
 }

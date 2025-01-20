@@ -37,6 +37,8 @@ variable "node_groups" {
       effect = string
     }))
     tag_name = string
+    node_instance_tags = map(string)
+    node_volume_tags = map(string)
   }))
 }
 
