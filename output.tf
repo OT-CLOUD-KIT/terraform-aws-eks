@@ -40,5 +40,5 @@ output "eks_cluster_arn" {
 
 output "module_node_group_resources" {
   description = "EKS module resources"
-  value = module.node_group.node_group_resources
+  value       = module.node_group.node_group_resources
 }

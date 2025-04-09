@@ -74,6 +74,12 @@ variable "tags" {
   default     = {}
 }
 
+variable "cluster_tags_only" {
+  description = "A map of tags to add to all resources"
+  type        = map(string)
+  default     = {}
+}
+
 variable "config_output_path" {
   description = "kubeconfig output path"
   type        = string
@@ -86,22 +92,22 @@ variable "kubeconfig_name" {
 
 variable "endpoint_private" {
   description = "endpoint private"
-  type = bool
+  type        = bool
 }
 variable "endpoint_public" {
   description = "endpoint public"
-  type = bool
+  type        = bool
 }
 
 variable "slackUrl" {
   description = "Slack Web hook URL"
-  type = string
-  default = ""
+  type        = string
+  default     = ""
 }
 
 variable "vpc_id" {
   description = "VPC ID"
-  type = string
+  type        = string
 }
 
 variable "create_node_group" {
@@ -112,8 +118,8 @@ variable "create_node_group" {
 
 variable "allow_eks_cidr" {
   description = "allow eks cidr"
-  type = list(string)
-  default = ["0.0.0.0/32"]
+  type        = list(string)
+  default     = ["0.0.0.0/32"]
 }
 
 variable "force_update_version" {
@@ -123,15 +129,15 @@ variable "force_update_version" {
 }
 
 variable "cluster_endpoint_whitelist" {
-  type = bool
+  type        = bool
   description = "For Wihtelist the cluster endpoint"
-  default = false
+  default     = false
 }
 
 variable "cluster_endpoint_access_cidrs" {
-  type = list(string)
+  type        = list(string)
   description = "For list of cidr to whitelist"
-  default = []
+  default     = []
 }
 
 variable "node_groups" {
@@ -149,11 +155,12 @@ variable "node_groups" {
     labels             = map(string)
     capacity_type      = string
     ami_type           = string
+    taints             = optional(any, {})
   }))
 }
 
 variable "enabled_cluster_log_types" {
-description = "List of the desired control plane logging to enable"
-type = list(string)
-default = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
+  description = "List of the desired control plane logging to enable"
+  type        = list(string)
+  default     = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
 }
