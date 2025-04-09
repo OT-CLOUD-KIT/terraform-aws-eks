@@ -75,7 +75,7 @@ variable "tags" {
 }
 
 variable "cluster_tags_only" {
-  description = "A map of tags to add to all resources"
+  description = "A map of tags to add to EKS cluster only"
   type        = map(string)
   default     = {}
 }
