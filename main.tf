@@ -1,8 +1,8 @@
 resource "aws_eks_cluster" "eks_cluster" {
-  name     = var.cluster_name
+  name                      = var.cluster_name
   enabled_cluster_log_types = var.enabled_cluster_log_types
-  role_arn = aws_iam_role.cluster_role.arn
-  version  = var.eks_cluster_version
+  role_arn                  = aws_iam_role.cluster_role.arn
+  version                   = var.eks_cluster_version
   tags = merge(
     {
       Name = format("%s-cluster", var.cluster_name)
@@ -10,7 +10,8 @@ resource "aws_eks_cluster" "eks_cluster" {
     {
       "Provisioner" = "Terraform"
     },
-    var.tags
+    var.tags,
+    var.cluster_tags_only
   )
   depends_on = [
     aws_iam_role_policy_attachment.eks-AmazonEKSClusterPolicy,
@@ -18,9 +19,9 @@ resource "aws_eks_cluster" "eks_cluster" {
   ]
 
   vpc_config {
-    subnet_ids = var.subnets
+    subnet_ids              = var.subnets
     endpoint_private_access = var.endpoint_private
-    endpoint_public_access = var.endpoint_public
+    endpoint_public_access  = var.endpoint_public
   }
 }
 

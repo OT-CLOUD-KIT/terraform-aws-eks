@@ -51,6 +51,13 @@ module "petpark_eks_cluster" {
       ami_type           = "AL2_x86_64_GPU"
       tags               = merge(local.common_tags, local.worker_group1_tags)
       labels             = { "node_group" : "worker1" }
+      taints = {
+        dedicated = {
+          key    = "role"
+          value  = "middleware"
+          effect = "NO_SCHEDULE"
+        }
+      }
     }
     "worker2" = {
       subnets            = ["privtesubnet_id_1", "privatesubnet_id_2"]
@@ -65,6 +72,13 @@ module "petpark_eks_cluster" {
       ami_type           = "AL2_x86_64"
       tags               = merge(local.common_tags, local.worker_group1_tags)
       labels             = { "node_group" : "worker2" }
+      taints = {
+        dedicated = {
+          key    = "role"
+          value  = "ingress"
+          effect = "NO_SCHEDULE"
+        }
+      }
     }
   }
 }
@@ -122,6 +136,7 @@ output "eks_cluster_arn" {
 | k8s-spot-termination-handler | if you want to install k8s-spot-termination-handler in eks cluster | boolean | yes | no |
 | cluster_autoscaler | if you want to install cluster_autoscaler in eks cluster | boolean | yes | no |
 | slackUrl | notification for instance termination | boolean | yes | no |
+| taints | to set taint/taints in node group | any | {} | no |
 
 
 ## Outputs
