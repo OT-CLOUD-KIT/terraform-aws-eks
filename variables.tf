@@ -8,6 +8,11 @@ variable "roles" {
 variable "env" {
   type = string
 }
+
+variable "k8s_version" {
+  type = string
+}
+
 variable "vpc_id" {
   type = string
 }

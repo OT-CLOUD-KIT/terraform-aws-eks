@@ -21,6 +21,7 @@ aws_region = "us-east-1"
 subnet_ids = ["subnet-0dc35556d7d0acebd", "subnet-0bb31c6137c07c782"]
 cluster_name    = "OT-microservices"
 env = "dev"
+k8s_version = "1.31"
 vpc_id = "vpc-04e17b61dfc861411"
 key_pair = "anjali-opstree"
 node_image_id = "ami-00a2c6fcb070edafc"
