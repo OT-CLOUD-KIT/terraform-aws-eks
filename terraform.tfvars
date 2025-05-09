@@ -36,7 +36,8 @@ node_groups = [
     max_unavailable = 1
     user_data      = "./environments/dev/node_group_user_data.sh"
     labels = {
-      "worker-1" = "enabled"
+      "worker-1" = "enabled",
+      "tf" = "true"
     }
     node_instance_tags = {}
     node_volume_tags = {}
@@ -64,7 +65,8 @@ node_groups = [
     max_unavailable = 1
     user_data      = "./environments/dev/node_group_user_data.sh"
     labels = {
-      "worker-2" = "enabled"
+      "worker-2" = "enabled",
+      "tf" = "true"
     }
     taint = [
       {
