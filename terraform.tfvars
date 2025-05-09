@@ -32,10 +32,13 @@ node_groups = [
     desired_size   = 1
     max_size       = 2
     min_size       = 1
+    max_unavailable = 1
     user_data      = "./environments/dev/node_group_user_data.sh"
     labels = {
       "worker-1" = "enabled"
     }
+    node_instance_tags = {}
+    node_volume_tags = {}
     taint = [
       {
         key    = "worker-1"
@@ -47,6 +50,8 @@ node_groups = [
     kubelet_extra_args = "--max-pods=20 --node-labels=worker-1-nodes=enabled"         
     taint = []
     tag_name = "dev"
+    node_instance_tags = {}
+    node_volume_tags = {}
   },
   {
     name           = "worker-2-nodes"
@@ -55,6 +60,7 @@ node_groups = [
     desired_size   = 1
     max_size       = 2
     min_size       = 1
+    max_unavailable = 1
     user_data      = "./environments/dev/node_group_user_data.sh"
     labels = {
       "worker-2" = "enabled"
@@ -70,6 +76,8 @@ node_groups = [
     kubelet_extra_args = "--max-pods=20 --node-labels=worker-2-nodes=enabled"         
     taint = []
     tag_name = "dev"
+    node_instance_tags = {}
+    node_volume_tags = {}
   }
 ]
 eks_addons = [

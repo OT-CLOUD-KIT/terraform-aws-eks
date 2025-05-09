@@ -1,12 +1,12 @@
 module "iam" {
-  source         = "../iam"
+  source         = "./iam"
   roles          = var.roles
   cluster_policy = var.cluster_policy
   node_policy    = var.node_policy
 }
 
 module "eks" {
-  source                    = "../eks"
+  source                    = "./eks"
   env                       = var.env
   vpc_id                    = var.vpc_id
   subnet_ids                = var.subnet_ids

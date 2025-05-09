@@ -154,6 +154,10 @@ resource "aws_eks_node_group" "node_group" {
     min_size     = var.node_groups[count.index].min_size
   }
 
+  update_config {
+    max_unavailable = var.node_groups[count.index].max_unavailable
+  }
+
   labels = var.node_groups[count.index].labels
 
   dynamic "taint" {
