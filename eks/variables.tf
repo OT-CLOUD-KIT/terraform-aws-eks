@@ -5,7 +5,9 @@ variable "env" {
   type = string
 }
 
-
+variable "cluster_version" {
+  type = string
+}
 variable "cluster_name" {
   type = string
 }
