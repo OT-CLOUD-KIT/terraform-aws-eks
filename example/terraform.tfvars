@@ -15,7 +15,9 @@ cluster_policy = [
 node_policy = [
   "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy",
   "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly",
-  "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
+  "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy",
+  "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+
 ]
 aws_region      = "ap-south-1"
 subnet_ids      = ["subnet-08ac4215773c4c7f1", "subnet-05ea90a00562ead8e"]
@@ -24,7 +26,7 @@ env             = "dev"
 cluster_version = "1.30"
 vpc_id          = "vpc-087439c673e8a354e"
 key_pair        = "ec2-keypair"
-node_image_id   = "ami-00771e89b2e8f2945"
+node_image_id   = "ami-003c0d8931dc3f095"
 
 node_groups = [
   {
@@ -96,9 +98,9 @@ node_groups = [
 ]
 eks_addons = [
   { name = "vpc-cni", version = "v1.19.2-eksbuild.1" }, # Example version for VPC CNI compatible with 1.31          # Example version for CoreDNS compatible with 1.31
-  { name = "kube-proxy", version = "v1.32.0-eksbuild.2" },
-  { name = "coredns", version = "v1.11.4-eksbuild.2" }, # Example version for kube-proxy compatible with 1.31
-  { name = "aws-ebs-csi-driver", version = "v1.42.0-eksbuild.1" }
+  { name = "kube-proxy", version = "v1.30.6-eksbuild.3" },
+  { name = "coredns", version = "v1.11.1-eksbuild.8" }, # Example version for kube-proxy compatible with 1.31
+  { name = "aws-ebs-csi-driver", version = "v1.43.0-eksbuild.1" }
 ]
 
 eks_ingress = [
@@ -130,7 +132,7 @@ eks_egress = [
 ]
 
 # New variables
-enable_public_endpoint = false # Disable public endpoint
+enable_public_endpoint = true # Disable public endpoint
 authentication_mode    = true  # Enable API/ConfigMap access
 eks_cluster_sg_rules = {
   rule1 = {
