@@ -21,6 +21,7 @@ aws_region = "us-east-1"
 subnet_ids = ["subnet-0dc35556d7d0acebd", "subnet-0bb31c6137c07c782"]
 cluster_name    = "OT-microservices"
 env = "dev"
+k8s_version = "1.31"
 vpc_id = "vpc-04e17b61dfc861411"
 key_pair = "anjali-opstree"
 node_image_id = "ami-00a2c6fcb070edafc"
@@ -32,10 +33,14 @@ node_groups = [
     desired_size   = 1
     max_size       = 2
     min_size       = 1
+    max_unavailable = 1
     user_data      = "./environments/dev/node_group_user_data.sh"
     labels = {
-      "worker-1" = "enabled"
+      "worker-1" = "enabled",
+      "tf" = "true"
     }
+    node_instance_tags = {}
+    node_volume_tags = {}
     taint = [
       {
         key    = "worker-1"
@@ -47,6 +52,8 @@ node_groups = [
     kubelet_extra_args = "--max-pods=20 --node-labels=worker-1-nodes=enabled"         
     taint = []
     tag_name = "dev"
+    node_instance_tags = {}
+    node_volume_tags = {}
   },
   {
     name           = "worker-2-nodes"
@@ -55,9 +62,11 @@ node_groups = [
     desired_size   = 1
     max_size       = 2
     min_size       = 1
+    max_unavailable = 1
     user_data      = "./environments/dev/node_group_user_data.sh"
     labels = {
-      "worker-2" = "enabled"
+      "worker-2" = "enabled",
+      "tf" = "true"
     }
     taint = [
       {
@@ -70,6 +79,8 @@ node_groups = [
     kubelet_extra_args = "--max-pods=20 --node-labels=worker-2-nodes=enabled"         
     taint = []
     tag_name = "dev"
+    node_instance_tags = {}
+    node_volume_tags = {}
   }
 ]
 eks_addons = [

@@ -2,6 +2,8 @@ resource "aws_eks_cluster" "eks" {
   name     = var.cluster_name
   role_arn = var.cluster_role
 
+  version = var.k8s_version
+
   vpc_config {
     subnet_ids              = [for subnet_id in var.subnet_ids : subnet_id]
     endpoint_public_access  = var.enable_public_endpoint
@@ -152,6 +154,10 @@ resource "aws_eks_node_group" "node_group" {
     desired_size = var.node_groups[count.index].desired_size
     max_size     = var.node_groups[count.index].max_size
     min_size     = var.node_groups[count.index].min_size
+  }
+
+  update_config {
+    max_unavailable = var.node_groups[count.index].max_unavailable
   }
 
   labels = var.node_groups[count.index].labels

@@ -8,6 +8,11 @@ variable "roles" {
 variable "env" {
   type = string
 }
+
+variable "k8s_version" {
+  type = string
+}
+
 variable "vpc_id" {
   type = string
 }
@@ -25,6 +30,8 @@ variable "cluster_policy" {
 variable "node_policy" {
   type = list(string)
 }
+
+
 variable "cluster_name" {
   type = string
 }
@@ -40,6 +47,7 @@ variable "node_groups" {
     capacity_type      = string
     kubelet_extra_args = string
     tag_name = string
+    max_unavailable = number
     node_instance_tags = map(string)
     node_volume_tags = map(string)
     taint = list(object({

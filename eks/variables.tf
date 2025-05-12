@@ -5,6 +5,9 @@ variable "env" {
   type = string
 }
 
+variable "k8s_version" {
+  type = string
+}
 
 variable "cluster_name" {
   type = string
@@ -28,6 +31,7 @@ variable "node_groups" {
     desired_size       = number
     max_size           = number
     min_size           = number
+    max_unavailable    = number
     labels             = map(string)
     capacity_type      = string
     kubelet_extra_args = string
