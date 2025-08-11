@@ -6,6 +6,7 @@ A Terraform module to deploy a **highly configurable Amazon EKS Cluster** in AWS
 
 ## Architecture
 
+<img width="812" height="759" alt="image" src="https://github.com/user-attachments/assets/a4be2e97-022c-4c6a-a5d3-facdb068cbbe" />
 
 
 > **Note:** This architecture supports private/public subnet configurations, custom launch templates for App/DB node groups, and secure security group rules.
