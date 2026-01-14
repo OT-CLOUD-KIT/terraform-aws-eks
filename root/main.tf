@@ -1,5 +1,5 @@
 module "eks" {
-  source = "/home/ubuntu/new"
+  source = "../"
 
   # Project info
   bu      = var.bu
